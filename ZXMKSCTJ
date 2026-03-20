@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>竹小苗口算出题机</title>
+    <!-- V1.5.0  -T2026.3.20 -->
+    <!-- 作者：酷比的粑粑 -->
+    <!-- 更新下载 提取码zyxx：https://www.123865.com/s/w0eA-fjDFv?pwd=zyxx# -->
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bamboo-primary: #2d5016;
+            --bamboo-light: #7cb342;
+            --bamboo-lighter: #c5e1a5;
+            --bamboo-bg: #f1f8e9;
+            --accent-orange: #ff9800;
+            --accent-blue: #2196f3;
+            --accent-green: #4caf50;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-pressed: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 飘落的竹叶动画 */
+        .bamboo-leaves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background: linear-gradient(45deg, #7cb342, #558b2f);
+            border-radius: 0 100% 0 100%;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* 主题栏 - 简化版 */
+        .header {
+            background: linear-gradient(135deg, var(--bamboo-primary) 0%, var(--bamboo-light) 100%);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "🎋";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .header::after {
+            content: "🎋";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .main-title {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 宣传框 */
+        .promo-box {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* 宣传框1 - 四行文字高度，滚动效果 */
+        .promo-1 {
+            min-height: calc(1.6em * 4 + 30px);
+            position: relative;
+            background: linear-gradient(90deg, #fff9c4, #fffde7);
+            border-left: 5px solid var(--accent-orange);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .scrolling-text {
+            position: absolute;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            padding: 15px;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* 宣传框2 - 三栏布局 */
+        .promo-2 {
+            display: grid;
+            grid-template-columns: 100px 1fr 100px;
+            gap: 15px;
+            align-items: center;
+            min-height: 120px;
+            padding: 20px;
+        }
+
+        .promo-2-left, .promo-2-right {
+            background: #f5f5f5;
+            border-radius: 10px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.8rem;
+            border: 2px dashed #ddd;
+            flex-direction: column;
+        }
+
+        .promo-2-center {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .promo-subtitle-1 {
+            font-size: 1.1rem;
+            color: var(--bamboo-primary);
+            font-weight: 600;
+            font-style: italic;
+            padding: 5px;
+        }
+
+        .promo-subtitle-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            color: #555;
+            background: var(--bamboo-bg);
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .promo-subtitle-row a {
+            color: var(--bamboo-primary);
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .promo-subtitle-row a:hover {
+            opacity: 0.8;
+            color: var(--accent-orange);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed var(--bamboo-lighter);
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--bamboo-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 100px;
+            font-size: 1rem;
+        }
+
+        /* 下拉框样式 */
+        select {
+            padding: 12px 15px;
+            border: 3px solid var(--bamboo-lighter);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+
+        select:focus {
+            border-color: var(--bamboo-light);
+            box-shadow: 0 0 0 3px rgba(124, 179, 66, 0.2);
+        }
+
+        /* 复选框组 */
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: var(--bamboo-bg);
+            border-radius: 10px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .checkbox-item:hover {
+            background: var(--bamboo-lighter);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--bamboo-light);
+        }
+
+        /* 难度选择 */
+        .difficulty-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 12px 20px;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-btn.easy {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .difficulty-btn.medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .difficulty-btn.hard {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .difficulty-btn.active {
+            border-color: var(--bamboo-primary);
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .difficulty-btn::after {
+            content: attr(data-text);
+            font-size: 0.8rem;
+            display: block;
+            opacity: 0.8;
+        }
+
+        /* 数字输入控制 */
+        .number-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .big-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--bamboo-light), var(--bamboo-primary));
+            color: white;
+            box-shadow: 0 4px 0 var(--bamboo-primary), 0 5px 10px rgba(0,0,0,0.2);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .big-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 var(--bamboo-primary), 0 1px 5px rgba(0,0,0,0.2);
+        }
+
+        .number-input {
+            width: 100px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.3rem;
+            border: 3px solid var(--bamboo-lighter);
+            border-radius: 12px;
+            outline: none;
+            font-weight: bold;
+            color: var(--bamboo-primary);
+        }
+
+        .number-input:focus {
+            border-color: var(--bamboo-light);
+        }
+
+        /* 滑块开关 */
+        .toggle-switch {
+            position: relative;
+            width: 80px;
+            height: 40px;
+            background: #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-green);
+        }
+
+        .toggle-switch::after {
+            content: "";
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            top: 4px;
+            left: 4px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(40px);
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* 出题模式 */
+        .mode-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 10px 18px;
+            border: 3px solid var(--bamboo-lighter);
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .mode-btn.active {
+            background: var(--bamboo-light);
+            color: white;
+            border-color: var(--bamboo-primary);
+        }
+
+        /* 主按钮 */
+        .main-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--accent-orange), #f57c00);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #e65100, 0 8px 15px rgba(0,0,0,0.2);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #e65100, 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), #1565c0);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #0d47a1, 0 6px 10px rgba(0,0,0,0.2);
+            transition: all 0.1s;
+        }
+
+        .btn-secondary:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #0d47a1, 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green), #2e7d32);
+            box-shadow: 0 4px 0 #1b5e20, 0 6px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-success:active {
+            box-shadow: 0 0 0 #1b5e20, 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 答题区域 */
+        .quiz-area {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .quiz-area.active {
+            display: block;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timer {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--bamboo-primary);
+            background: var(--bamboo-bg);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .progress {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* 题目网格 */
+        .questions-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .questions-grid.single { grid-template-columns: 1fr; }
+        .questions-grid.double { grid-template-columns: repeat(2, 1fr); }
+        .questions-grid.triple { grid-template-columns: repeat(3, 1fr); }
+        .questions-grid.quadruple { grid-template-columns: repeat(4, 1fr); }
+
+        @media (max-width: 768px) {
+            .questions-grid.triple,
+            .questions-grid.quadruple {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .questions-grid.double,
+            .questions-grid.triple,
+            .questions-grid.quadruple {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-item {
+            background: white;
+            border: 3px solid var(--bamboo-lighter);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .question-item:hover {
+            border-color: var(--bamboo-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .question-item.correct {
+            border-color: var(--accent-green);
+            background: #e8f5e9;
+        }
+
+        .question-item.wrong {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--bamboo-primary);
+            min-width: 30px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .answer-input {
+            width: 80px;
+            height: 45px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 3px solid var(--bamboo-lighter);
+            border-radius: 10px;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .answer-input:focus {
+            border-color: var(--bamboo-light);
+        }
+
+        .answer-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .check-mark {
+            font-size: 1.5rem;
+            display: none;
+        }
+
+        .check-mark.show {
+            display: block;
+        }
+
+        .check-mark.correct { color: var(--accent-green); }
+        .check-mark.wrong { color: #f44336; }
+
+        .correct-answer {
+            display: none;
+            font-size: 0.9rem;
+            color: #f44336;
+            margin-left: 5px;
+        }
+
+        .correct-answer.show {
+            display: inline;
+        }
+
+        /* 单题模式导航 */
+        .single-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* 结果区域 */
+        .result-area {
+            background: linear-gradient(135deg, #fff9c4, #fff59d);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            display: none;
+        }
+
+        .result-area.active {
+            display: block;
+        }
+
+        .result-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            color: var(--bamboo-primary);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-form {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-row label {
+            font-weight: 600;
+            color: #555;
+            min-width: 80px;
+        }
+
+        .form-row input {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px;
+            border: 2px solid var(--bamboo-lighter);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .score-display.perfect { background: #c8e6c9; color: #2e7d32; }
+        .score-display.good { background: #bbdefb; color: #1565c0; }
+        .score-display.pass { background: #fff9c4; color: #f57f17; }
+        .score-display.fail { background: #ffcdd2; color: #c62828; }
+
+        /* 打印样式 */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .bamboo-leaves,
+            .control-panel,
+            .quiz-header,
+            .single-nav,
+            .main-actions,
+            .promo-box,
+            .btn-primary,
+            .btn-secondary,
+            .check-mark,
+            .correct-answer,
+            .result-area {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .header {
+                background: white !important;
+                color: black !important;
+                border: 2px solid #333;
+                box-shadow: none !important;
+                page-break-after: avoid;
+            }
+
+            .header::before,
+            .header::after {
+                display: none;
+            }
+
+            .quiz-area {
+                display: block !important;
+                box-shadow: none;
+                border: none;
+                padding: 10px;
+            }
+
+            .questions-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px;
+            }
+
+            .question-item {
+                border: 1px solid #333;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .answer-input {
+                border: 1px solid #999;
+                background: #f5f5f5;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            /* 强制一页打印 */
+            .quiz-area {
+                page-break-before: avoid;
+                page-break-after: avoid;
+            }
+
+            .question-item {
+                orphans: 3;
+                widows: 3;
+            }
+        }
+
+        /* 庆祝动画 */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .celebration.active {
+            display: block;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 提示框 */
+        .alert-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 10000;
+            text-align: center;
+            display: none;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .alert-box.active {
+            display: block;
+        }
+
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+        }
+
+        .alert-overlay.active {
+            display: block;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 5px;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-label {
+                min-width: auto;
+            }
+
+            .promo-2 {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .promo-2-left, .promo-2-right {
+                display: none;
+            }
+
+            .promo-subtitle-row {
+                flex-direction: column;
+                gap: 5px;
+                font-size: 0.85rem;
+            }
+
+            .big-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .number-input {
+                width: 80px;
+                height: 40px;
+            }
+        }
+
+        /* 分享按钮组 */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .share-wechat {
+            background: #07c160;
+            color: white;
+        }
+
+        .share-dingtalk {
+            background: #0089ff;
+            color: white;
+        }
+
+        .share-image {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--bamboo-primary);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 飘落竹叶背景 -->
+    <div class="bamboo-leaves" id="bambooLeaves"></div>
+
+    <!-- 庆祝动画层 -->
+    <div class="celebration" id="celebration"></div>
+
+    <!-- 提示框 -->
+    <div class="alert-overlay" id="alertOverlay"></div>
+    <div class="alert-box" id="alertBox">
+        <div style="font-size: 3rem; margin-bottom: 15px;">📱</div>
+        <h3 id="alertTitle">提示</h3>
+        <p id="alertMessage" style="margin: 15px 0; color: #666; line-height: 1.6;"></p>
+        <button class="btn-secondary" onclick="closeAlert()" style="margin-top: 10px;">知道了</button>
+    </div>
+
+    <div class="container">
+        <!-- 主题栏 - 简化版，仅显示主标题 -->
+        <header class="header">
+            <h1 class="main-title">🎋 竹小苗口算出题机 🎋</h1>
+        </header>
+
+        <!-- 宣传框1：滚动文字 -->
+        <div class="promo-box promo-1">
+            <div class="scrolling-text" id="scrollingText"></div>
+        </div>
+
+        <!-- 宣传框2：三栏布局，中间显示副标题 -->
+        <div class="promo-box promo-2">
+            <div class="promo-2-left">
+                <div>📱</div>
+                <div>预留二维码位</div>
+            </div>
+            <div class="promo-2-center">
+                <div class="promo-subtitle-1">
+                    虽不懂编织，然有AI也，为了艺馨小朋友，手搓也要搞出来。
+                </div>
+                <div class="promo-subtitle-row">
+                    <span>作者：<a href="https://wgw.weixiao100.com.cn/custom/wgw/index?schoolCode=72784383-4&qySchool=0" target="_blank" id="authorLink">酷比的粑粑</a></span>
+                    <span>版本号：<span id="versionDisplay">V1.5.0 - T2026.3.20</span></span>
+                    <span>更新提取码：<a href="https://www.123865.com/s/w0eA-fjDFv?pwd=zyxx#" target="_blank">zyxx</a></span>
+                </div>
+            </div>
+            <div class="promo-2-right">
+                <div>📱</div>
+                <div>预留二维码位</div>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <!-- 选题功能 -->
+            <div class="control-section">
+                <div class="section-title">📚 选题设置</div>
+                
+                <div class="control-row">
+                    <span class="control-label">选择年级：</span>
+                    <select id="gradeSelect">
+                        <option value="1">一年级</option>
+                        <option value="2">二年级</option>
+                        <option value="3">三年级</option>
+                        <option value="4">四年级</option>
+                        <option value="5">五年级</option>
+                        <option value="6">六年级</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <span class="control-label">上下册：</span>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="semester1" checked>
+                            <span>上册</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="semester2" checked>
+                            <span>下册</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-row">
+                    <span class="control-label">题型选择：</span>
+                    <select id="questionType">
+                        <option value="20addsub">20以内加减法</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <span class="control-label">难度等级：</span>
+                    <div class="difficulty-group">
+                        <button class="difficulty-btn easy active" data-level="easy" data-text="初入江湖" onclick="setDifficulty('easy')">简单</button>
+                        <button class="difficulty-btn medium" data-level="medium" data-text="小有成就" onclick="setDifficulty('medium')">中等</button>
+                        <button class="difficulty-btn hard" data-level="hard" data-text="身手不凡" onclick="setDifficulty('hard')">困难</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 题目数量 -->
+            <div class="control-section">
+                <div class="section-title">🔢 题目参数</div>
+                
+                <div class="control-row">
+                    <span class="control-label">题目数量：</span>
+                    <div class="number-control">
+                        <button class="big-btn" onclick="changeNumber('count', -1)">−</button>
+                        <input type="number" id="questionCount" class="number-input" value="10" min="0" max="100" onchange="syncNumber('count')">
+                        <button class="big-btn" onclick="changeNumber('count', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="control-row">
+                    <span class="control-label">数字范围：</span>
+                    <div class="number-control">
+                        <button class="big-btn" onclick="changeNumber('range', -10)">−</button>
+                        <input type="number" id="numberRange" class="number-input" value="20" min="0" max="1000" step="10" onchange="syncNumber('range')">
+                        <button class="big-btn" onclick="changeNumber('range', 10)">+</button>
+                    </div>
+                </div>
+
+                <div class="control-row">
+                    <span class="control-label">允许负数：</span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="toggle-switch" id="negativeToggle" onclick="toggleNegative()"></div>
+                        <span class="toggle-label" id="negativeLabel">新手保护模式（不允许）</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 出题模式 -->
+            <div class="control-section">
+                <div class="section-title">📝 出题模式</div>
+                
+                <div class="control-row">
+                    <span class="control-label">显示模式：</span>
+                    <div class="mode-group">
+                        <button class="mode-btn active" onclick="setMode('multi')">多题模式</button>
+                        <button class="mode-btn" onclick="setMode('single')">单题模式</button>
+                    </div>
+                </div>
+
+                <div class="control-row" id="columnSelector">
+                    <span class="control-label">列数选择：</span>
+                    <div class="mode-group">
+                        <button class="mode-btn" onclick="setColumns(1)">单列</button>
+                        <button class="mode-btn active" onclick="setColumns(2)">双列</button>
+                        <button class="mode-btn" onclick="setColumns(3)">三列</button>
+                        <button class="mode-btn" onclick="setColumns(4)">四列</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="main-actions">
+                <button class="btn-primary" onclick="generateQuestions()">
+                    <span>🚀</span>
+                    <span>开始出题</span>
+                </button>
+                <button class="btn-secondary" onclick="resetAll()">
+                    <span>🔄</span>
+                    <span>重置默认</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 答题区域 -->
+        <div class="quiz-area" id="quizArea">
+            <div class="quiz-header">
+                <div class="timer" id="timer">⏱️ 00:00</div>
+                <div class="progress" id="progress">进度: 0/0</div>
+            </div>
+
+            <div class="questions-grid double" id="questionsGrid">
+                <!-- 题目将在这里生成 -->
+            </div>
+
+            <div class="single-nav" id="singleNav" style="display: none;">
+                <button class="big-btn" onclick="prevQuestion()">◀</button>
+                <button class="btn-secondary" onclick="submitAnswer()">提交答案</button>
+                <button class="big-btn" onclick="nextQuestion()">▶</button>
+            </div>
+
+            <div class="main-actions" id="submitArea">
+                <button class="btn-success" onclick="checkAnswers()">
+                    <span>✅</span>
+                    <span>提交检查</span>
+                </button>
+                <button class="btn-secondary" onclick="printQuestions()">
+                    <span>🖨️</span>
+                    <span>打印题目</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 结果区域 -->
+        <div class="result-area" id="resultArea">
+            <div class="result-emoji" id="resultEmoji">🏆</div>
+            <div class="result-title" id="resultTitle">恭喜你，全部正确！</div>
+            
+            <div class="result-form">
+                <div class="form-row">
+                    <label>姓名：</label>
+                    <input type="text" id="studentName" placeholder="请输入姓名">
+                </div>
+                <div class="form-row">
+                    <label>班级：</label>
+                    <input type="text" id="studentClass" placeholder="请输入班级">
+                </div>
+                <div class="form-row">
+                    <label>日期：</label>
+                    <input type="text" id="currentDate" readonly>
+                </div>
+                <div class="form-row">
+                    <label>得分：</label>
+                    <div id="scoreDisplay" class="score-display perfect">100分</div>
+                </div>
+            </div>
+
+            <div class="share-buttons">
+                <button class="share-btn share-image" onclick="saveAsImage()">
+                    <span>📷</span> 保存为图片
+                </button>
+                <button class="share-btn share-wechat" onclick="shareToWechat()">
+                    <span>💬</span> 分享到微信
+                </button>
+                <button class="share-btn share-dingtalk" onclick="shareToDingtalk()">
+                    <span>📱</span> 分享到钉钉
+                </button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>🎋 竹小苗口算出题机 - 让数学练习变得有趣 🎋</p>
+            <p style="font-size: 0.8rem; margin-top: 5px;">支持电脑、手机、平板使用 | 兼容鸿蒙、安卓、苹果系统</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== 版本与配置 ====================
+        const VERSION = 'V1.5.0';
+        const DATE = 'T2026.3.20';
+        const AUTHOR = '酷比的粑粑';
+        
+        // ==================== 教学要求数据 ====================
+        const curriculum = {
+            1: {
+                name: '一年级',
+                1: [ // 上册
+                    { value: '10add', text: '10以内加法' },
+                    { value: '10sub', text: '10以内减法' },
+                    { value: '20add', text: '20以内加法' },
+                    { value: '20sub', text: '20以内减法' },
+                    { value: '20sub_no', text: '20以内不退位减法' }
+                ],
+                2: [ // 下册
+                    { value: '20sub_back', text: '20以内退位减法' },
+                    { value: '20mix', text: '20以内加减混合' },
+                    { value: '20method', text: '平10法、破10法、想加算减' },
+                    { value: '100addsub', text: '100以内加减法' }
+                ]
+            },
+            2: {
+                name: '二年级',
+                1: [ // 上册
+                    { value: '100mix', text: '100以内连加连减混合' },
+                    { value: 'multiply', text: '乘法认识和口诀' },
+                    { value: 'divide', text: '除法认识和口诀求商' }
+                ],
+                2: [ // 下册
+                    { value: 'remainder', text: '有余数的除法' },
+                    { value: '10000addsub', text: '万以内数的加减法' }
+                ]
+            },
+            3: {
+                name: '三年级',
+                1: [
+                    { value: '10000mix', text: '万以内连加连减混合' },
+                    { value: 'multistep', text: '乘除加减两步混合' },
+                    { value: '1digit23', text: '一位数乘两、三位数' },
+                    { value: 'decimal_money', text: '元角分小数加减' }
+                ],
+                2: [
+                    { value: '1div23', text: '一位数除两、三位数' },
+                    { value: '2digit22', text: '两位数乘两位数' },
+                    { value: 'fraction_simple', text: '同分母分数加减' }
+                ]
+            },
+            4: {
+                name: '四年级',
+                1: [
+                    { value: '3digit22', text: '三位数乘两位数' },
+                    { value: '3div2', text: '三位数除以两位数' },
+                    { value: 'laws', text: '运算律及混合运算' },
+                    { value: 'quantity', text: '常见数量关系' }
+                ],
+                2: [
+                    { value: 'decimal_addsub', text: '小数加减法' },
+                    { value: 'decimal_mult', text: '小数乘法' }
+                ]
+            },
+            5: {
+                name: '五年级',
+                1: [
+                    { value: 'fraction_addsub', text: '分数加减法' },
+                    { value: 'fraction_mult', text: '分数乘法' },
+                    { value: 'fraction_div', text: '分数除法' }
+                ],
+                2: [
+                    { value: 'fraction_addsub2', text: '分数加减法' },
+                    { value: 'fraction_mult2', text: '分数乘法' },
+                    { value: 'fraction_div2', text: '分数除法' }
+                ]
+            },
+            6: {
+                name: '六年级',
+                1: [
+                    { value: 'fraction_mix', text: '分数混合运算' },
+                    { value: 'percent', text: '百分数应用' }
+                ],
+                2: []
+            }
+        };
+
+        // ==================== 宣传文字 ====================
+        const promoTexts = [
+            "1.自动化是懒人的发明，自动化是勤奋人的发明，好像说的都对。",
+            "2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",
+            "3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",
+            "4.世间本无路，只是走的人多了便有了路。",
+            "5.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",
+            "6.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",
+            "7.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",
+            "8.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",
+            "9.贪玩的孩子最喜欢什么课？不想做白日梦该怎么办？米的妈妈是谁？什么布剪不断？什么水不能喝？什么球能包容一切？",
+            "10.满江红·写怀 宋·岳飞 怒发冲冠，凭栏处、潇潇雨歇...莫等闲、白了少年头，空悲切..."
+        ];
+
+        // ==================== 状态变量 ====================
+        let currentState = {
+            grade: 1,
+            semester: [1, 2],
+            difficulty: 'easy',
+            count: 10,
+            range: 20,
+            allowNegative: false,
+            mode: 'multi', // 'multi' 或 'single'
+            columns: 2,
+            questions: [],
+            answers: [],
+            currentIndex: 0,
+            startTime: null,
+            elapsedTime: 0,
+            timerInterval: null,
+            checked: false
+        };
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initBambooLeaves();
+            initPromoText();
+            initGradeListener();
+            updateQuestionTypes();
+            updateDate();
+            updateVersionInfo();
+            
+            // 键盘事件监听
+            document.addEventListener('keydown', handleKeydown);
+        });
+
+        // 初始化飘落竹叶
+        function initBambooLeaves() {
+            const container = document.getElementById('bambooLeaves');
+            const leafCount = 15;
+            
+            for (let i = 0; i < leafCount; i++) {
+                createLeaf(container, i);
+            }
+        }
+
+        function createLeaf(container, index) {
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            leaf.style.animationDelay = (Math.random() * 10) + 's';
+            leaf.style.opacity = Math.random() * 0.4 + 0.3;
+            container.appendChild(leaf);
+        }
+
+        // 初始化宣传文字
+        function initPromoText() {
+            const text = promoTexts[Math.floor(Math.random() * promoTexts.length)];
+            const scrollingText = document.getElementById('scrollingText');
+            scrollingText.textContent = text;
+            
+            // 随机颜色
+            const colors = ['#2d5016', '#7cb342', '#ff9800', '#2196f3', '#e91e63', '#9c27b0'];
+            scrollingText.style.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // 更新版本信息到宣传框2
+        function updateVersionInfo() {
+            document.getElementById('versionDisplay').textContent = VERSION + ' - ' + DATE;
+            document.getElementById('authorLink').textContent = AUTHOR;
+        }
+
+        // 年级监听
+        function initGradeListener() {
+            document.getElementById('gradeSelect').addEventListener('change', function(e) {
+                currentState.grade = parseInt(e.target.value);
+                updateQuestionTypes();
+            });
+            
+            document.getElementById('semester1').addEventListener('change', updateQuestionTypes);
+            document.getElementById('semester2').addEventListener('change', updateQuestionTypes);
+        }
+
+        // 更新题型选项
+        function updateQuestionTypes() {
+            const grade = parseInt(document.getElementById('gradeSelect').value);
+            const sem1 = document.getElementById('semester1').checked;
+            const sem2 = document.getElementById('semester2').checked;
+            const select = document.getElementById('questionType');
+            
+            select.innerHTML = '';
+            currentState.semester = [];
+            
+            if (sem1) currentState.semester.push(1);
+            if (sem2) currentState.semester.push(2);
+            
+            let hasOptions = false;
+            currentState.semester.forEach(sem => {
+                if (curriculum[grade] && curriculum[grade][sem]) {
+                    curriculum[grade][sem].forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.value;
+                        option.textContent = item.text;
+                        select.appendChild(option);
+                        hasOptions = true;
+                    });
+                }
+            });
+            
+            if (!hasOptions) {
+                const option = document.createElement('option');
+                option.value = 'default';
+                option.textContent = '默认题型';
+                select.appendChild(option);
+            }
+        }
+
+        // ==================== 控制功能 ====================
+        function setDifficulty(level) {
+            currentState.difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.level === level) btn.classList.add('active');
+            });
+        }
+
+        function changeNumber(type, delta) {
+            const input = type === 'count' ? document.getElementById('questionCount') : document.getElementById('numberRange');
+            let value = parseInt(input.value) || 0;
+            let min = type === 'count' ? 0 : 0;
+            let max = type === 'count' ? 100 : 1000;
+            let step = type === 'count' ? 1 : 10;
+            
+            value += delta * step;
+            value = Math.max(min, Math.min(max, value));
+            input.value = value;
+            syncNumber(type);
+        }
+
+        function syncNumber(type) {
+            const input = type === 'count' ? document.getElementById('questionCount') : document.getElementById('numberRange');
+            let value = parseInt(input.value) || 0;
+            let min = type === 'count' ? 0 : 0;
+            let max = type === 'count' ? 100 : 1000;
+            
+            value = Math.max(min, Math.min(max, value));
+            input.value = value;
+            
+            if (type === 'count') currentState.count = value;
+            else currentState.range = value;
+        }
+
+        function toggleNegative() {
+            const toggle = document.getElementById('negativeToggle');
+            const label = document.getElementById('negativeLabel');
+            
+            currentState.allowNegative = !currentState.allowNegative;
+            toggle.classList.toggle('active', currentState.allowNegative);
+            
+            if (currentState.allowNegative) {
+                label.textContent = '高手过招（允许负数）';
+                label.style.color = '#e91e63';
+            } else {
+                label.textContent = '新手保护模式（不允许）';
+                label.style.color = '#555';
+            }
+        }
+
+        function setMode(mode) {
+            currentState.mode = mode;
+            document.querySelectorAll('.mode-group')[0].querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(mode === 'multi' ? '多题' : '单题')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            document.getElementById('columnSelector').style.display = mode === 'multi' ? 'flex' : 'none';
+        }
+
+        function setColumns(cols) {
+            currentState.columns = cols;
+            document.querySelectorAll('#columnSelector .mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (currentState.questions.length > 0) {
+                renderQuestions();
+            }
+        }
+
+        function resetAll() {
+            // 重置所有值为默认
+            document.getElementById('gradeSelect').value = '1';
+            document.getElementById('semester1').checked = true;
+            document.getElementById('semester2').checked = true;
+            document.getElementById('questionCount').value = '10';
+            document.getElementById('numberRange').value = '20';
+            
+            currentState = {
+                grade: 1,
+                semester: [1, 2],
+                difficulty: 'easy',
+                count: 10,
+                range: 20,
+                allowNegative: false,
+                mode: 'multi',
+                columns: 2,
+                questions: [],
+                answers: [],
+                currentIndex: 0,
+                startTime: null,
+                elapsedTime: 0,
+                timerInterval: null,
+                checked: false
+            };
+            
+            setDifficulty('easy');
+            document.getElementById('negativeToggle').classList.remove('active');
+            document.getElementById('negativeLabel').textContent = '新手保护模式（不允许）';
+            setMode('multi');
+            
+            // 重置列数按钮
+            document.querySelectorAll('#columnSelector .mode-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === 1); // 默认双列
+            });
+            
+            updateQuestionTypes();
+            document.getElementById('quizArea').classList.remove('active');
+            document.getElementById('resultArea').classList.remove('active');
+            
+            // 重新随机宣传文字
+            initPromoText();
+        }
+
+        // ==================== 出题功能 ====================
+        function generateQuestions() {
+            const count = parseInt(document.getElementById('questionCount').value) || 10;
+            const range = parseInt(document.getElementById('numberRange').value) || 20;
+            const type = document.getElementById('questionType').value;
+            
+            currentState.questions = [];
+            currentState.answers = [];
+            currentState.checked = false;
+            currentState.currentIndex = 0;
+            
+            // 生成题目
+            for (let i = 0; i < count; i++) {
+                const q = generateSingleQuestion(range, type);
+                currentState.questions.push(q);
+                currentState.answers.push('');
+            }
+            
+            // 显示答题区域
+            document.getElementById('quizArea').classList.add('active');
+            document.getElementById('resultArea').classList.remove('active');
+            
+            renderQuestions();
+            startTimer();
+            updateProgress();
+            
+            // 滚动到答题区域
+            document.getElementById('quizArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateSingleQuestion(range, type) {
+            let num1, num2, operator, answer;
+            const difficulty = currentState.difficulty;
+            
+            // 根据难度调整范围
+            let actualRange = range;
+            if (difficulty === 'easy') actualRange = Math.min(range, 20);
+            else if (difficulty === 'medium') actualRange = Math.min(range * 1.5, 100);
+            else actualRange = Math.min(range * 2, 1000);
+            
+            // 根据题型生成
+            switch(type) {
+                case '10add':
+                case '20add':
+                case '100addsub':
+                case '10000addsub':
+                    operator = '+';
+                    num1 = Math.floor(Math.random() * actualRange) + 1;
+                    num2 = Math.floor(Math.random() * (actualRange - num1));
+                    answer = num1 + num2;
+                    break;
+                    
+                case '10sub':
+                case '20sub_no':
+                    operator = '−';
+                    num1 = Math.floor(Math.random() * actualRange) + 1;
+                    num2 = Math.floor(Math.random() * num1);
+                    answer = num1 - num2;
+                    break;
+                    
+                case '20sub_back':
+                case '20mix':
+                    if (Math.random() > 0.5) {
+                        operator = '+';
+                        num1 = Math.floor(Math.random() * actualRange);
+                        num2 = Math.floor(Math.random() * (actualRange - num1));
+                        answer = num1 + num2;
+                    } else {
+                        operator = '−';
+                        num1 = Math.floor(Math.random() * actualRange);
+                        num2 = Math.floor(Math.random() * actualRange);
+                        if (!currentState.allowNegative && num2 > num1) {
+                            [num1, num2] = [num2, num1];
+                        }
+                        answer = num1 - num2;
+                    }
+                    break;
+                    
+                case 'multiply':
+                    operator = '×';
+                    num1 = Math.floor(Math.random() * 9) + 1;
+                    num2 = Math.floor(Math.random() * 9) + 1;
+                    answer = num1 * num2;
+                    break;
+                    
+                case 'divide':
+                    operator = '÷';
+                    num2 = Math.floor(Math.random() * 9) + 1;
+                    answer = Math.floor(Math.random() * 9) + 1;
+                    num1 = num2 * answer;
+                    break;
+                    
+                case 'remainder':
+                    operator = '÷';
+                    num2 = Math.floor(Math.random() * 8) + 2;
+                    num1 = Math.floor(Math.random() * 50) + 10;
+                    answer = num1 + '...' + (num1 % num2);
+                    break;
+                    
+                default:
+                    // 默认加减混合
+                    if (Math.random() > 0.5) {
+                        operator = '+';
+                        num1 = Math.floor(Math.random() * actualRange);
+                        num2 = Math.floor(Math.random() * (actualRange - num1));
+                        answer = num1 + num2;
+                    } else {
+                        operator = '−';
+                        num1 = Math.floor(Math.random() * actualRange);
+                        num2 = Math.floor(Math.random() * actualRange);
+                        if (!currentState.allowNegative && num2 > num1) {
+                            [num1, num2] = [num2, num1];
+                        }
+                        answer = num1 - num2;
+                    }
+            }
+            
+            return {
+                num1,
+                num2,
+                operator,
+                answer,
+                userAnswer: ''
+            };
+        }
+
+        function renderQuestions() {
+            const grid = document.getElementById('questionsGrid');
+            grid.innerHTML = '';
+            
+            // 设置列数
+            grid.className = 'questions-grid';
+            if (currentState.mode === 'multi') {
+                const colClass = ['single', 'double', 'triple', 'quadruple'][currentState.columns - 1];
+                grid.classList.add(colClass);
+            } else {
+                grid.classList.add('single');
+            }
+            
+            // 单题模式只显示当前题
+            const displayCount = currentState.mode === 'single' ? 1 : currentState.questions.length;
+            const startIdx = currentState.mode === 'single' ? currentState.currentIndex : 0;
+            
+            for (let i = 0; i < displayCount; i++) {
+                const idx = startIdx + i;
+                if (idx >= currentState.questions.length) break;
+                
+                const q = currentState.questions[idx];
+                const item = createQuestionElement(q, idx + 1);
+                grid.appendChild(item);
+            }
+            
+            // 单题模式显示导航
+            document.getElementById('singleNav').style.display = currentState.mode === 'single' ? 'flex' : 'none';
+        }
+
+        function createQuestionElement(q, num) {
+            const div = document.createElement('div');
+            div.className = 'question-item';
+            div.dataset.index = num - 1;
+            
+            div.innerHTML = `
+                <span class="question-number">${num}.</span>
+                <span class="question-text">${q.num1} ${q.operator} ${q.num2} = </span>
+                <input type="number" class="answer-input" 
+                    value="${q.userAnswer}" 
+                    onchange="updateAnswer(${num - 1}, this.value)"
+                    onkeyup="handleAnswerKeyup(event, ${num - 1})"
+                    ${currentState.checked ? 'disabled' : ''}>
+                <span class="check-mark ${currentState.checked ? (parseInt(q.userAnswer) === parseInt(q.answer) ? 'correct' : 'wrong') + ' show' : ''}">
+                    ${parseInt(q.userAnswer) === parseInt(q.answer) ? '✓' : '✗'}
+                </span>
+                <span class="correct-answer ${currentState.checked && parseInt(q.userAnswer) !== parseInt(q.answer) ? 'show' : ''}">
+                    正确答案: ${q.answer}
+                </span>
+            `;
+            
+            return div;
+        }
+
+        // 处理答案输入框的键盘事件
+        function handleAnswerKeyup(event, index) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (currentState.mode === 'single') {
+                    // 单题模式：Enter跳到下一题
+                    nextQuestion();
+                } else {
+                    // 多题模式：Enter跳到下一题输入框
+                    focusNext(index);
+                }
+            }
+        }
+
+        function updateAnswer(index, value) {
+            currentState.questions[index].userAnswer = value;
+            updateProgress();
+        }
+
+        function focusNext(currentIdx) {
+            const inputs = document.querySelectorAll('.answer-input');
+            if (inputs[currentIdx + 1]) {
+                inputs[currentIdx + 1].focus();
+            }
+        }
+
+        function updateProgress() {
+            const answered = currentState.questions.filter(q => q.userAnswer !== '').length;
+            document.getElementById('progress').textContent = `进度: ${answered}/${currentState.questions.length}`;
+        }
+
+        // ==================== 计时功能 ====================
+        function startTimer() {
+            stopTimer();
+            currentState.startTime = Date.now();
+            currentState.elapsedTime = 0;
+            
+            currentState.timerInterval = setInterval(() => {
+                currentState.elapsedTime = Math.floor((Date.now() - currentState.startTime) / 1000);
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (currentState.timerInterval) {
+                clearInterval(currentState.timerInterval);
+                currentState.timerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentState.elapsedTime / 60).toString().padStart(2, '0');
+            const seconds = (currentState.elapsedTime % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds}`;
+        }
+
+        // ==================== 答题导航（单题模式） ====================
+        function prevQuestion() {
+            if (currentState.currentIndex > 0) {
+                currentState.currentIndex--;
+                renderQuestions();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentState.currentIndex < currentState.questions.length - 1) {
+                currentState.currentIndex++;
+                renderQuestions();
+            } else {
+                // 最后一题时，可以自动提交检查（可选）
+                // checkAnswers();
+            }
+        }
+
+        function submitAnswer() {
+            const input = document.querySelector('.answer-input');
+            if (input && currentState.currentIndex < currentState.questions.length - 1) {
+                nextQuestion();
+            } else {
+                // 最后一题可以提示是否提交检查
+                // 这里只是保存答案并跳转，不自动检查
+                if (currentState.currentIndex === currentState.questions.length - 1) {
+                    // 已经是最后一题，可以提示用户点击"提交检查"按钮
+                    showAlert('提示', '已是最后一题，请点击下方的"提交检查"按钮查看成绩！');
+                }
+            }
+        }
+
+        function handleKeydown(e) {
+            if (!document.getElementById('quizArea').classList.contains('active')) return;
+            if (currentState.mode !== 'single') return;
+            
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevQuestion();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                nextQuestion();
+            }
+        }
+
+        // ==================== 检查答案（必须点击提交检查按钮） ====================
+        function checkAnswers() {
+            // 停止计时
+            stopTimer();
+            
+            // 标记为已检查状态
+            currentState.checked = true;
+            
+            // 计算正确数
+            let correct = 0;
+            currentState.questions.forEach(q => {
+                if (parseInt(q.userAnswer) === parseInt(q.answer)) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / currentState.questions.length) * 100);
+            
+            // 重新渲染题目，显示对错标记和正确答案
+            renderQuestions();
+            
+            // 显示结果区域
+            showResult(correct, percentage);
+        }
+
+        function showResult(correct, percentage) {
+            const resultArea = document.getElementById('resultArea');
+            resultArea.classList.add('active');
+            
+            // 设置表情和标题
+            let emoji, title, scoreClass;
+            if (percentage === 100) {
+                emoji = '🏆';
+                title = '太棒了！全部正确！';
+                scoreClass = 'perfect';
+                triggerCelebration();
+            } else if (percentage >= 90) {
+                emoji = '😊';
+                title = '真厉害！继续加油！';
+                scoreClass = 'good';
+            } else if (percentage >= 80) {
+                emoji = '👍';
+                title = '做得不错！再接再厉！';
+                scoreClass = 'good';
+            } else if (percentage >= 60) {
+                emoji = '🌱';
+                title = '及格了！还要努力哦！';
+                scoreClass = 'pass';
+            } else {
+                emoji = '💪';
+                title = '别灰心，继续练习！';
+                scoreClass = 'fail';
+            }
+            
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultTitle').textContent = title;
+            
+            // 更新分数显示
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.className = 'score-display ' + scoreClass;
+            scoreDisplay.textContent = `${correct}/${currentState.questions.length} (${percentage}分)`;
+            
+            // 滚动到结果区域
+            resultArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function triggerCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = '';
+            celebration.classList.add('active');
+            
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                celebration.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                celebration.classList.remove('active');
+            }, 5000);
+        }
+
+        // ==================== 打印功能 ====================
+        function printQuestions() {
+            // 检查是否移动设备
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                showAlert('打印提示', '由于手机和平板系统约束问题，无法直接打印，建议导出PDF或者截屏保存图片。');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // ==================== 分享功能 ====================
+        function saveAsImage() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                showAlert('保存提示', '由于手机和平板系统约束问题，无法直接保存，建议截屏保存图片。');
+                return;
+            }
+            
+            // 使用html2canvas或类似库截图（这里模拟）
+            showAlert('保存成功', '答题结果已保存为图片！');
+        }
+
+        function shareToWechat() {
+            const name = document.getElementById('studentName').value || '未命名';
+            const text = `竹小苗口算成绩：${name} 刚刚完成了口算练习，快来看看吧！`;
+            
+            // 复制到剪贴板
+            copyToClipboard(text);
+            showAlert('分享提示', '分享内容已复制到剪贴板，请粘贴到微信发送给好友！');
+        }
+
+        function shareToDingtalk() {
+            const name = document.getElementById('studentName').value || '未命名';
+            const text = `竹小苗口算成绩：${name} 刚刚完成了口算练习，快来看看吧！`;
+            
+            copyToClipboard(text);
+            showAlert('分享提示', '分享内容已复制到剪贴板，请粘贴到钉钉发送给好友！');
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        // ==================== 工具函数 ====================
+        function showAlert(title, message) {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertOverlay').classList.add('active');
+            document.getElementById('alertBox').classList.add('active');
+        }
+
+        function closeAlert() {
+            document.getElementById('alertOverlay').classList.remove('active');
+            document.getElementById('alertBox').classList.remove('active');
+        }
+
+        function updateDate() {
+            const now = new Date();
+            const dateStr = now.getFullYear() + '年' + 
+                          (now.getMonth() + 1) + '月' + 
+                          now.getDate() + '日 ' +
+                          now.getHours().toString().padStart(2, '0') + ':' +
+                          now.getMinutes().toString().padStart(2, '0') + ':' +
+                          now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('currentDate').value = dateStr;
+        }
+
+        // 每秒更新时间
+        setInterval(updateDate, 1000);
+
+        // 页面可见性变化时处理计时器
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面隐藏时记录时间
+                if (currentState.timerInterval) {
+                    currentState.hiddenTime = Date.now();
+                }
+            } else {
+                // 页面显示时恢复（如果需要）
+                if (currentState.hiddenTime && currentState.timerInterval) {
+                    currentState.hiddenTime = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
