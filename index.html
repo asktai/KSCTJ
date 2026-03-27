@@ -1,10 +1,11 @@
 <!--
-版本号：V2.1.8（分享修复版）
+版本号：V2.1.9（正式发行版）
 作者：芭比娃娃的爸比
-更新说明（V2.1.7 → V2.1.8）：
-1. [UI] 自定义题型改为分类折叠布局，优化视觉体验
-2. [UX] 分享功能智能判断：未答题显示邀请文案，已答题显示真实成绩
-3. [Fix] 分享链接固定使用在线版地址，避免本地文件路径无法访问问题
+更新说明（V2.1.8 → V2.1.9）：
+1. [UI] 出题按钮行独立显示，选题设置面板折叠后仍可操作
+2. [UX] 键盘快捷键提示框支持拖动定位
+3. [Fix] 优化面板折叠逻辑，重置后自动展开
+4. [UI] 版本号左对齐，增加页码导航预留位
 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -14,8 +15,8 @@
     <meta name="theme-color" content="#66BB6A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="green-translucent">
-    <meta name="description" content="竹小苗计算出题机 V2.1.8 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
-    <title>竹小苗计算出题机 V2.1.8</title>
+    <meta name="description" content="竹小苗计算出题机 V2.1.9 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
+    <title>竹小苗计算出题机 V2.1.9</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIuebiueBsOacieacn-W4iOW5v+WvhueggSIsICJzaG9ydF9uYW1lIjogIuebiueBsOacieacn-IiwCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiI2YxZjhlOSIsICJ0aGVtZV9jb2xvciI6ICIjNjZCQjZBIiwgImljb25zIjogW3sic3JjLXNldCI6ICJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL0Btb3JnaHVsL2ZlYXRoZXJ8MS9kaXN0L2ZlYXRoZXIuc3ZnIn1dfQ==">
     <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/@morgul/feather@1/dist/feather.svg">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix@0.0.1/qrcode.min.js"></script>
@@ -256,14 +257,54 @@
         @media (max-width:480px){
             .type-category-grid{grid-template-columns:1fr}
         }
+        
+        /* 折叠面板样式 */
+        .settings-content{transition:max-height 0.4s ease,opacity 0.3s ease;max-height:2000px;opacity:1;overflow:hidden}
+        .settings-content.collapsed{max-height:0;opacity:0}
+        .btn-toggle{background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%);color:#1565c0;border:2px solid #90caf9;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+        .btn-toggle:hover{background:linear-gradient(135deg,#bbdefb 0%,#90caf9 100%);transform:translateY(-1px);box-shadow:0 2px 6px rgba(21,101,192,0.2)}
+        .btn-toggle:active{transform:translateY(0);box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+        #settingsToggleIcon{transition:transform 0.3s ease}
+        #settingsToggleIcon.collapsed{transform:rotate(-90deg)}
+        .card.collapsed-settings{border-left-color:#90caf9}
+        .card.collapsed-settings .card-title{background:linear-gradient(135deg,#e3f2fd 0%,#f5f5f5 100%)}
+        
+        /* 页码链接样式 */
+        #versionDisplay a[href=\"#\"]{font-size:12px;padding:2px 6px;border-radius:4px;background:rgba(102,187,106,0.1);transition:all 0.2s}
+        #versionDisplay a[href=\"#\"]:hover{background:rgba(102,187,106,0.2);opacity:1 !important;text-decoration:none}
+        
+        /* 分享码按钮特殊样式 */
+        .btn-share-code{background:linear-gradient(135deg,#fff3e0 0%,#ffe0b2 100%);color:#ef6c00;border:2px solid #ffb74d}
+        .btn-share-code:hover{background:linear-gradient(135deg,#ffe0b2 0%,#ffcc80 100%);box-shadow:0 4px 8px rgba(239,108,0,0.2)}
+        
+        /* 独立操作栏样式 */
+        .action-bar{background:linear-gradient(135deg,#ffffff 0%,#e8f5e9 100%);border-radius:var(--border-radius);padding:15px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid var(--bamboo-primary);border-left:4px solid var(--bamboo-primary);position:sticky;top:10px;z-index:100}
+        .action-bar .btn-row-compact{margin-top:0}
+        
+        /* 可拖动的键盘快捷键提示框 */
+        .keyboard-shortcuts{cursor:move;user-select:none;position:fixed;bottom:20px;left:20px;background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:11px;color:#666;z-index:100;border:1px solid var(--bamboo-light);max-width:200px;transition:box-shadow 0.2s,transform 0.2s}
+        .keyboard-shortcuts:hover{box-shadow:0 4px 12px rgba(0,0,0,0.2);transform:translateY(-2px)}
+        .keyboard-shortcuts.dragging{cursor:grabbing;opacity:0.8;box-shadow:0 6px 16px rgba(0,0,0,0.25);z-index:1000}
+        .keyboard-shortcuts kbd{background:#eee;padding:2px 4px;border-radius:3px;border:1px solid #ccc;font-family:monospace;font-size:10px}
+        @media (max-width:768px){.keyboard-shortcuts{display:none}}
     </style>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
 <body>
     <div id="cdnErrorContainer" class="no-print" style="display:none"></div>
     <div id="leafContainer"></div>
-    <div class="keyboard-shortcuts no-print"><div style="font-weight:bold;margin-bottom:6px;color:var(--bamboo-dark)">⌨️ 快捷键</div><div><kbd>Ctrl</kbd>+<kbd>P</kbd>打印</div><div><kbd>Enter</kbd>提交/下一题</div><div><kbd>←</kbd><kbd>→</kbd>切换题目</div><div><kbd>Esc</kbd>关闭弹窗</div></div>
+    <div class="keyboard-shortcuts no-print" id="keyboardShortcuts" title="拖动移动位置">
+            <div style="font-weight:bold;margin-bottom:6px;color:var(--bamboo-dark);display:flex;align-items:center;gap:4px">
+                <span>⌨️ 快捷键</span>
+                <span style="font-size:9px;color:#999;margin-left:auto">📌拖动</span>
+            </div>
+            <div><kbd>Ctrl</kbd>+<kbd>P</kbd>打印</div>
+            <div><kbd>Enter</kbd>提交/下一题</div>
+            <div><kbd>←</kbd><kbd>→</kbd>切换题目</div>
+            <div><kbd>Esc</kbd>关闭弹窗</div>
+        </div>
     <div class="floating-timer no-print" id="floatingTimer"><div class="timer-header"><span class="timer-icon-main">⏱️</span><span class="timer-title">计时器</span></div><div class="timer-row timer-current"><span class="timer-label-small">⏳单次</span><span class="timer-value" id="currentTimer">00:00</span></div><div class="timer-row timer-total-row"><span class="timer-label-small">⏱️累计</span><span class="timer-value" id="totalTimer">00:00</span></div><div class="drag-hint">❤拖动移动</div></div>
     <div class="celebration hidden" id="celebration"></div>
     <div class="container">
@@ -274,21 +315,37 @@
             <div class="info-center">
                 <div class="info-item" style="font-size:16px;color:#1B5E20;font-weight:bold;letter-spacing:1px">🌿 虽不会编织，但为了艺馨小朋友，手搓也要搞出来 🌿</div>
                 <div class="info-item">🖊️ 作者：<a href="https://github.com/asktai/KSCTJ" target="_blank">芭比娃娃的爸比</a></div>
-                <div class="info-item" id="versionDisplay">
-                    📦 版本号：<span id="versionText">加载中...</span> | 
-                    <a href="https://www.123865.com/s/w0eA-fjDFv?pwd=zyxx#" target="_blank">更新升级（提取码:zyxx）</a> | 
-                    <a href="https://docs.qq.com/aio/DS2p2VXZkeGZuVkFH" target="_blank">📖 说明文档</a> | 
-                    <a href="https://asktai.github.io/KSCTJ/" target="_blank">🌐 在线版</a> | 
+                <div class="info-item" id="versionDisplay" style="text-align:left;flex-wrap:wrap;gap:8px;display:flex;align-items:center">
+                    <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap">📦 版本号：<span id="versionText">加载中...</span></span>
+                    <span style="color:#ddd">|</span>
+                    <a href="https://www.123865.com/s/w0eA-fjDFv?pwd=zyxx#" target="_blank">更新升级（提取码:zyxx）</a>
+                    <span style="color:#ddd">|</span>
+                    <a href="https://docs.qq.com/aio/DS2p2VXZkeGZuVkFH" target="_blank">📖 说明文档</a>
+                    <span style="color:#ddd">|</span>
+                    <a href="https://asktai.github.io/KSCTJ/" target="_blank">🌐 在线版</a>
+                    <span style="color:#ddd">|</span>
                     <a href="http://120.77.43.174:9002/kousuan/" target="_blank">🌐 演示版</a>
+                    <span style="color:#ddd">|</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
+                        <a href="#" onclick="showPagePlaceholder(1);return false;" style="opacity:0.6" title="页1预留">📄1</a>
+                        <a href="#" onclick="showPagePlaceholder(2);return false;" style="opacity:0.6" title="页2预留">📄2</a>
+                        <a href="#" onclick="showPagePlaceholder(3);return false;" style="opacity:0.6" title="页3预留">📄3</a>
+                        <a href="#" onclick="showPagePlaceholder(4);return false;" style="opacity:0.6" title="页4预留">📄4</a>
+                        <a href="#" onclick="showPagePlaceholder(5);return false;" style="opacity:0.6" title="页5预留">📄5</a>
+                    </span>
                 </div>
             </div>
             <div class="qr-code" id="qrcodeContainer2"></div>
         </div>
-        <div class="card no-print">
-            <div class="card-title">🎯 选题设置</div>
+        <div class="card no-print" id="settingsCard">
+            <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleSettingsPanel()">
+                <span>🎯 选题设置</span>
+                <span id="settingsToggleIcon" style="font-size:14px;color:#666;transition:transform 0.3s">▼</span>
+            </div>
+            <div id="settingsContent" class="settings-content">
             <div class="tabs">
                 <div class="tab-group"><button class="tab" onclick="switchTab('outline')" id="tab-outline">📚 大纲题型</button><button class="tab active" onclick="switchTab('custom')" id="tab-custom">⚙️ 自定义题型</button></div>
-                <button class="btn-reset" onclick="resetSettings()">🔄 重置设置</button>
+                <button class="btn-toggle" onclick="toggleSettingsPanel()" id="toggleSettingsBtn" title="折叠/展开设置面板">📂 折叠</button>
             </div>
             <div class="tab-content" id="outlineTab">
                 <div class="input-group"><label class="input-label">选择年级</label><select class="input-field" id="gradeSelect" onchange="updateOutlineOptions()"><option value="1">一年级</option><option value="2">二年级</option><option value="3">三年级</option><option value="4">四年级</option><option value="5">五年级</option><option value="6">六年级</option></select></div>
@@ -400,7 +457,18 @@
                 <div class="input-group"><label class="input-label">🚀 出题设置</label><div class="option-grid"><div class="checkbox-item selected" onclick="setQuestionMode('multi',this)"><input type="radio" name="mode" checked value="multi"><span class="checkbox-icon">📋</span><span>多题模式</span></div><div class="checkbox-item" onclick="setQuestionMode('single',this)"><input type="radio" name="mode" value="single"><span class="checkbox-icon">📝</span><span>单题模式</span></div></div></div>
                 <div class="input-group" id="columnSelect"><label class="input-label">📊 显示列数</label><div class="option-grid"><div class="checkbox-item" onclick="setColumn(1,this)"><input type="radio" name="col" value="1"><span>单列</span></div><div class="checkbox-item selected" onclick="setColumn(2,this)"><input type="radio" name="col" checked value="2"><span>双列</span></div><div class="checkbox-item" onclick="setColumn(3,this)"><input type="radio" name="col" value="3"><span>三列</span></div><div class="checkbox-item" onclick="setColumn(4,this)"><input type="radio" name="col" value="4"><span>四列</span></div></div></div>
                 <div class="input-group" id="fractionModeSelect"><label class="input-label">🔢 分数显示模式</label><div class="option-grid"><div class="checkbox-item selected" onclick="setFractionMode('traditional',this)"><input type="radio" name="fractionMode" checked value="traditional"><span>分数线模式</span></div><div class="checkbox-item" onclick="setFractionMode('slash',this)"><input type="radio" name="fractionMode" value="slash"><span>斜线模式</span></div></div></div>
-                <div class="btn-row-compact"><button class="btn btn-blue" onclick="generateQuestions()">🚀出题</button><button class="btn btn-danger" onclick="quickCheck()">✅提交</button></div>
+            </div>
+        </div>
+            </div>
+        </div>
+        
+        <!-- 独立操作栏：出题按钮行（独立于选题设置面板） -->
+        <div class="action-bar no-print" id="actionBar">
+            <div class="btn-row-compact" style="margin-top:0">
+                <button class="btn-reset" onclick="resetSettings()" title="重置所有设置">🔄 重置</button>
+                <button class="btn btn-blue" onclick="generateQuestions()">🚀 出题</button>
+                <button class="btn btn-danger" onclick="quickCheck()">✅ 提交</button>
+                <button class="btn btn-secondary" onclick="showShareCodePlaceholder()" title="出题分享码（预留功能）" style="opacity:0.7">🔖 分享码</button>
             </div>
         </div>
         <div class="card print-area" id="questionCard" style="display:none">
@@ -480,7 +548,62 @@
     </div>
     <canvas id="hiddenCanvas" style="display:none"></canvas>
     <script>
-        const CONFIG={version:'V2.1.8',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
+        // 设置面板折叠状态管理
+        let settingsPanelCollapsed = false;
+        
+        function toggleSettingsPanel(forceState) {
+            const content = document.getElementById('settingsContent');
+            const card = document.getElementById('settingsCard');
+            const icon = document.getElementById('settingsToggleIcon');
+            const toggleBtn = document.getElementById('toggleSettingsBtn');
+            
+            if (!content || !card) return;
+            
+            // 如果指定了强制状态，则使用强制状态，否则切换
+            const shouldCollapse = forceState !== undefined ? forceState : !settingsPanelCollapsed;
+            
+            if (shouldCollapse) {
+                content.classList.add('collapsed');
+                card.classList.add('collapsed-settings');
+                if (icon) icon.classList.add('collapsed');
+                if (toggleBtn) toggleBtn.innerHTML = '📁 展开';
+                settingsPanelCollapsed = true;
+            } else {
+                content.classList.remove('collapsed');
+                card.classList.remove('collapsed-settings');
+                if (icon) icon.classList.remove('collapsed');
+                if (toggleBtn) toggleBtn.innerHTML = '📂 折叠';
+                settingsPanelCollapsed = false;
+                // 展开时平滑滚动到设置区域
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        // 出题后自动折叠设置面板
+        function autoCollapseSettings() {
+            if (!settingsPanelCollapsed) {
+                toggleSettingsPanel(true);
+            }
+        }
+        
+        // 重置后展开设置面板
+        function autoExpandSettings() {
+            if (settingsPanelCollapsed) {
+                toggleSettingsPanel(false);
+            }
+        }
+        
+        // 页码占位提示
+        function showPagePlaceholder(pageNum) {
+            showModal('📄 页面预留', `页${pageNum}功能预留位\n\n此处将用于：\n• 分页显示大量题目\n• 历史记录分页查看\n• 或题目分类导航\n\n敬请期待后续版本更新！`);
+        }
+        
+        // 分享码占位提示
+        function showShareCodePlaceholder() {
+            showModal('🔖 出题分享码（预留）', '功能说明：\n生成唯一分享码，其他用户输入分享码可直接加载相同题目设置。\n\n适用场景：\n• 老师统一布置相同作业\n• 家长分享优质题组\n• 班级挑战相同题目\n\n此功能将在后续版本中上线，敬请期待！');
+        }
+        
+        const CONFIG={version:'V2.1.9（正式发行版）',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
 
         let appState={currentTab:'custom',grade:1,volumes:['up'],outlineTypes:[],selectedCustomTypes:['add'],difficulty:'easy',questionCount:10,numberRange:20,allowNegative:false,questionMode:'multi',columns:2,fractionMode:'traditional',questions:[],currentQuestionIndex:0,answers:{},timer:{startTime:null,elapsed:0,totalElapsed:0,interval:null},isSubmitted:false,volumeMultiMode:false,outlineTypeMultiMode:false,customTypeMultiMode:false,hasScrolledToResult:false,history:[]};
 
@@ -497,11 +620,14 @@
 
         const StorageManager={prefix:CONFIG.storagePrefix,getSize(){let total=0;for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);const value=localStorage.getItem(key);total+=(key.length+value.length)*2}return total},setItem(key,value){const fullKey=this.prefix+key;const jsonValue=JSON.stringify(value);try{localStorage.setItem(fullKey,jsonValue);return{success:true,method:'localStorage'}}catch(e){if(e.name==='QuotaExceededError'||e.code===22||e.message.includes('quota')){console.warn('[StorageManager] 存储配额已满，尝试清理旧数据...');this.cleanupOldHistory();try{localStorage.setItem(fullKey,jsonValue);return{success:true,method:'localStorage',cleaned:true}}catch(e2){console.error('[StorageManager] 清理后仍然失败，使用内存降级:',e2);window._fallbackStorage=window._fallbackStorage||new Map();window._fallbackStorage.set(fullKey,value);return{success:true,method:'memory',warning:'数据仅保存在内存中，刷新页面后将丢失'}}}throw e}},getItem(key){const fullKey=this.prefix+key;try{const item=localStorage.getItem(fullKey);if(item)return JSON.parse(item)}catch(e){console.warn('[StorageManager] 读取失败:',e)}if(window._fallbackStorage&&window._fallbackStorage.has(fullKey))return window._fallbackStorage.get(fullKey);return null},removeItem(key){const fullKey=this.prefix+key;try{localStorage.removeItem(fullKey)}catch(e){console.warn('[StorageManager] 删除失败:',e)}if(window._fallbackStorage)window._fallbackStorage.delete(fullKey)},cleanupOldHistory(){}};
 
-        document.addEventListener('DOMContentLoaded',function(){checkCDNErrors();document.getElementById('versionText').textContent=CONFIG.version;initMarquee();initLeaves();initTimerDrag();ResizeManager.init();initVolumeSelect();updateOutlineOptions();initStudentSelects();loadStudentInfoFromStorage();updateDateTime();setInterval(updateDateTime,1000);document.addEventListener('keydown',handleKeyboard);updateEncouragement();initQRCode();checkPWAStatus();window.addEventListener('beforeunload',cleanupResources)});
+        document.addEventListener('DOMContentLoaded',function(){checkCDNErrors();document.getElementById('versionText').textContent=CONFIG.version;initMarquee();initLeaves();initTimerDrag();initKeyboardShortcutsDrag();ResizeManager.init();initVolumeSelect();updateOutlineOptions();initStudentSelects();loadStudentInfoFromStorage();updateDateTime();setInterval(updateDateTime,1000);document.addEventListener('keydown',handleKeyboard);updateEncouragement();initQRCode();checkPWAStatus();window.addEventListener('beforeunload',cleanupResources)});
 
         function checkCDNErrors(){if(window.cdnLoadErrors&&window.cdnLoadErrors.length>0){const container=document.getElementById('cdnErrorContainer');let html='<div class="cdn-error-banner">';if(window.cdnLoadErrors.includes('qrcode'))html+='⚠️ 二维码生成库加载失败，二维码功能将不可用<br>';if(window.cdnLoadErrors.includes('html2canvas'))html+='⚠️ 截图功能库加载失败，保存图片功能将不可用<br>';html+='<button onclick="location.reload()">刷新页面重试</button></div>';container.innerHTML=html;container.style.display='block'}}
 
         function cleanupResources(){ResizeManager.destroy();if(appState.timer.interval)clearInterval(appState.timer.interval);document.removeEventListener('keydown',handleKeyboard)}
+
+        // 键盘快捷键框拖动功能
+        function initKeyboardShortcutsDrag(){const shortcuts=document.getElementById('keyboardShortcuts');if(!shortcuts)return;let isDragging=false,startX,startY,initialLeft,initialTop;shortcuts.addEventListener('mousedown',dragStart);shortcuts.addEventListener('touchstart',dragStart,{passive:false});function dragStart(e){e.preventDefault();if(e.type==='touchstart'){startX=e.touches[0].clientX;startY=e.touches[0].clientY}else{startX=e.clientX;startY=e.clientY}const rect=shortcuts.getBoundingClientRect();initialLeft=rect.left;initialTop=rect.top;isDragging=true;shortcuts.classList.add('dragging');document.addEventListener('mousemove',drag);document.addEventListener('mouseup',dragEnd);document.addEventListener('touchmove',drag,{passive:false});document.addEventListener('touchend',dragEnd)}function drag(e){if(!isDragging)return;e.preventDefault();let clientX,clientY;if(e.type==='touchmove'){clientX=e.touches[0].clientX;clientY=e.touches[0].clientY}else{clientX=e.clientX;clientY=e.clientY}const deltaX=clientX-startX;const deltaY=clientY-startY;let newLeft=initialLeft+deltaX;let newTop=initialTop+deltaY;const maxLeft=window.innerWidth-shortcuts.offsetWidth;const maxTop=window.innerHeight-shortcuts.offsetHeight;newLeft=Math.max(0,Math.min(newLeft,maxLeft));newTop=Math.max(0,Math.min(newTop,maxTop));shortcuts.style.left=newLeft+'px';shortcuts.style.top=newTop+'px';shortcuts.style.bottom='auto';shortcuts.style.right='auto'}function dragEnd(){isDragging=false;shortcuts.classList.remove('dragging');document.removeEventListener('mousemove',drag);document.removeEventListener('mouseup',dragEnd);document.removeEventListener('touchmove',drag);document.removeEventListener('touchend',dragEnd)}}
 
         function checkPWAStatus(){if('serviceWorker' in navigator)console.log('PWA支持已启用（需部署到服务器以启用离线功能）')}
 
@@ -530,7 +656,8 @@
 
 ⚠️ 提示：本地历史记录不会被清除`;showModal('🔄 重置确认',confirmContent,true,()=>{OperationLock.run('reset',executeReset,(error)=>{showModal('❌ 重置失败','重置过程中发生错误：'+error.message)})})}
 
-        function executeReset(){try{if(appState.timer&&appState.timer.interval)clearInterval(appState.timer.interval);appState={currentTab:'custom',grade:1,volumes:['up'],outlineTypes:[],selectedCustomTypes:['add'],difficulty:'easy',questionCount:10,numberRange:20,allowNegative:false,questionMode:'multi',columns:2,questions:[],currentQuestionIndex:0,answers:{},timer:{startTime:null,elapsed:0,totalElapsed:0,interval:null},isSubmitted:false,volumeMultiMode:false,outlineTypeMultiMode:false,customTypeMultiMode:false,hasScrolledToResult:false,history:[]};document.getElementById('gradeSelect').value='1';document.getElementById('volumeMultiSwitch').checked=false;document.querySelectorAll('#volumeSelect .checkbox-item').forEach(el=>{const volKey=el.getAttribute('data-volume');const input=el.querySelector('input');if(volKey==='up'){el.classList.add('selected');if(input)input.checked=true}else{el.classList.remove('selected');if(input)input.checked=false}});updateOutlineOptions();document.getElementById('typeMultiSwitch').checked=false;document.getElementById('customTypeMultiSwitch').checked=false;document.querySelectorAll('.checkbox-item[data-type]').forEach(el=>{const type=el.getAttribute('data-type');if(type==='add'){el.classList.add('selected')}else{el.classList.remove('selected')}});document.getElementById('questionCountInput').value=10;document.getElementById('numberRangeInput').value=20;document.querySelectorAll('.selector-btn.easy, .selector-btn.medium, .selector-btn.hard').forEach(btn=>btn.classList.remove('active'));document.querySelector('.selector-btn.easy').classList.add('active');document.getElementById('btn-positive').classList.add('active');document.getElementById('btn-negative').classList.remove('active');document.querySelectorAll('[name="mode"]').forEach(el=>{const item=el.closest('.checkbox-item');if(el.value==='multi'){if(item)item.classList.add('selected');el.checked=true}else{if(item)item.classList.remove('selected');el.checked=false}});['questionCard','actionButtonsPanel','resultPanel','studentInfoCard','printHeader','singleNavigation'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';if(id==='resultPanel')el.classList.remove('visible')}});document.getElementById('questionArea').innerHTML='';document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('printScore').textContent='___/___';document.getElementById('schoolInput').selectedIndex=0;document.getElementById('classInput').selectedIndex=0;document.getElementById('nameInput').selectedIndex=0;updatePrintHeader();updateTimerDisplay();updateEncouragement();switchTab('custom');window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{showModal('✅ 重置完成','所有设置已恢复默认值（历史记录已保留），可以重新开始出题了！')},200)}catch(error){console.error('Reset failed:',error);throw error}}
+        function executeReset(){try{if(appState.timer&&appState.timer.interval)clearInterval(appState.timer.interval);appState={currentTab:'custom',grade:1,volumes:['up'],outlineTypes:[],selectedCustomTypes:['add'],difficulty:'easy',questionCount:10,numberRange:20,allowNegative:false,questionMode:'multi',columns:2,questions:[],currentQuestionIndex:0,answers:{},timer:{startTime:null,elapsed:0,totalElapsed:0,interval:null},isSubmitted:false,volumeMultiMode:false,outlineTypeMultiMode:false,customTypeMultiMode:false,hasScrolledToResult:false,history:[]};document.getElementById('gradeSelect').value='1';document.getElementById('volumeMultiSwitch').checked=false;document.querySelectorAll('#volumeSelect .checkbox-item').forEach(el=>{const volKey=el.getAttribute('data-volume');const input=el.querySelector('input');if(volKey==='up'){el.classList.add('selected');if(input)input.checked=true}else{el.classList.remove('selected');if(input)input.checked=false}});updateOutlineOptions();document.getElementById('typeMultiSwitch').checked=false;document.getElementById('customTypeMultiSwitch').checked=false;document.querySelectorAll('.checkbox-item[data-type]').forEach(el=>{const type=el.getAttribute('data-type');if(type==='add'){el.classList.add('selected')}else{el.classList.remove('selected')}});document.getElementById('questionCountInput').value=10;document.getElementById('numberRangeInput').value=20;document.querySelectorAll('.selector-btn.easy, .selector-btn.medium, .selector-btn.hard').forEach(btn=>btn.classList.remove('active'));document.querySelector('.selector-btn.easy').classList.add('active');document.getElementById('btn-positive').classList.add('active');document.getElementById('btn-negative').classList.remove('active');document.querySelectorAll('[name="mode"]').forEach(el=>{const item=el.closest('.checkbox-item');if(el.value==='multi'){if(item)item.classList.add('selected');el.checked=true}else{if(item)item.classList.remove('selected');el.checked=false}});['questionCard','actionButtonsPanel','resultPanel','studentInfoCard','printHeader','singleNavigation'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';if(id==='resultPanel')el.classList.remove('visible')}});document.getElementById('questionArea').innerHTML='';document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('printScore').textContent='___/___';document.getElementById('schoolInput').selectedIndex=0;document.getElementById('classInput').selectedIndex=0;document.getElementById('nameInput').selectedIndex=0;updatePrintHeader();updateTimerDisplay();updateEncouragement();switchTab('custom');// 重置后自动展开设置面板
+            autoExpandSettings();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>{showModal('✅ 重置完成','所有设置已恢复默认值（历史记录已保留），可以重新开始出题了！')},200)}catch(error){console.error('Reset failed:',error);throw error}}
 
         function initQRCode(){if(typeof QRCode==='undefined'){console.warn('QRCode库未加载，跳过二维码生成');[document.getElementById('qrcodeContainer'),document.getElementById('qrcodeContainer2')].forEach(c=>{if(c)c.innerHTML='<span style="font-size:9px;color:#999">二维码<br>不可用</span>'});return}const url=window.location.href;const containers=[document.getElementById('qrcodeContainer'),document.getElementById('qrcodeContainer2')];try{containers.forEach(container=>{if(container){container.innerHTML='';const canvas=document.createElement('canvas');canvas.id='qrcodeCanvas';canvas.width=50;canvas.height=50;container.appendChild(canvas);new QRCode(canvas,{text:url,width:50,height:50,colorDark:"#388E3C",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}})}catch(e){console.error('二维码生成失败',e);containers.forEach(c=>{if(c)c.innerHTML='<span style="font-size:9px;color:#999">二维码失败</span>'})}}
 
@@ -729,7 +856,10 @@
                 }
             }
         }
-        function generateQuestions(){if(!OperationLock.acquire('generate',5000))return;try{if(!validateGenerateParams()){OperationLock.release('generate');return}const isCustomMode=appState.currentTab==='custom';let types=isCustomMode?appState.selectedCustomTypes:mapOutlineToTypes(appState.outlineTypes);if(types.length===0)types=['mixed'];const count=appState.questionCount;const range=appState.numberRange;const newQuestions=[];for(let i=0;i<count;i++){let question,valid=false,attempts=0,maxAttempts=300;while(!valid&&attempts<maxAttempts){attempts++;const type=types[Math.floor(Math.random()*types.length)];question=generateSingleQuestion(type,range,appState.difficulty,appState.allowNegative);valid=validateQuestion(question,range,appState.allowNegative)}if(!valid){showModal('出题失败',`无法生成符合要求的题目（第${i+1}题）。\n建议：\n1. 增大数值范围\n2. 选择更简单的题型\n3. 关闭负数模式`);OperationLock.release('generate');return}newQuestions.push(question)}appState.questions=newQuestions;appState.answers={};appState.currentQuestionIndex=0;appState.isSubmitted=false;appState.hasScrolledToResult=false;document.getElementById('questionCard').style.display='block';document.getElementById('actionButtonsPanel').style.display='block';document.getElementById('resultPanel').style.display='block';document.getElementById('resultPanel').classList.add('visible');document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('studentInfoCard').style.display='block';const printHeader=document.getElementById('printHeader');if(printHeader){printHeader.style.display='block';printHeader.classList.add('visible')}updatePrintHeader();updateMetaRow();renderQuestions();startTimer();if(appState.questionMode==='single'){document.getElementById('singleNavigation').style.display='flex'}else{document.getElementById('singleNavigation').style.display='none'}document.getElementById('questionCard').scrollIntoView({behavior:'smooth',block:'start'})}catch(error){console.error('Generate questions error:',error);showModal('❌ 出题异常','生成题目时发生错误：'+error.message)}finally{OperationLock.release('generate')}}
+        function generateQuestions(){if(!OperationLock.acquire('generate',5000))return;try{if(!validateGenerateParams()){OperationLock.release('generate');return}const isCustomMode=appState.currentTab==='custom';let types=isCustomMode?appState.selectedCustomTypes:mapOutlineToTypes(appState.outlineTypes);if(types.length===0)types=['mixed'];const count=appState.questionCount;const range=appState.numberRange;const newQuestions=[];for(let i=0;i<count;i++){let question,valid=false,attempts=0,maxAttempts=300;while(!valid&&attempts<maxAttempts){attempts++;const type=types[Math.floor(Math.random()*types.length)];question=generateSingleQuestion(type,range,appState.difficulty,appState.allowNegative);valid=validateQuestion(question,range,appState.allowNegative)}if(!valid){showModal('出题失败',`无法生成符合要求的题目（第${i+1}题）。\n建议：\n1. 增大数值范围\n2. 选择更简单的题型\n3. 关闭负数模式`);OperationLock.release('generate');return}newQuestions.push(question)}appState.questions=newQuestions;appState.answers={};appState.currentQuestionIndex=0;appState.isSubmitted=false;appState.hasScrolledToResult=false;document.getElementById('questionCard').style.display='block';document.getElementById('actionButtonsPanel').style.display='block';document.getElementById('resultPanel').style.display='block';document.getElementById('resultPanel').classList.add('visible');document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('studentInfoCard').style.display='block';const printHeader=document.getElementById('printHeader');if(printHeader){printHeader.style.display='block';printHeader.classList.add('visible')}updatePrintHeader();updateMetaRow();renderQuestions();startTimer();if(appState.questionMode==='single'){document.getElementById('singleNavigation').style.display='flex'}else{document.getElementById('singleNavigation').style.display='none'}document.getElementById('questionCard').scrollIntoView({behavior:'smooth',block:'start'});
+            // 出题成功后自动折叠设置面板
+            setTimeout(()=>autoCollapseSettings(),500);
+        }catch(error){console.error('Generate questions error:',error);showModal('❌ 出题异常','生成题目时发生错误：'+error.message)}finally{OperationLock.release('generate')}}
 
         function validateGenerateParams(){const isCustomMode=appState.currentTab==='custom';const selectedTypes=isCustomMode?appState.selectedCustomTypes:appState.outlineTypes;if(!isCustomMode){if(!Array.isArray(selectedTypes)||selectedTypes.length===0){showModal('提示','请至少选择一种大纲题型！');return false}const safeTypes=selectedTypes.filter(t=>typeof t==='string'&&t.length<100&&t!=='__proto__'&&t!=='constructor');if(safeTypes.length!==selectedTypes.length){console.warn('[安全警告] 大纲题型包含可疑值，已清理');appState.outlineTypes=safeTypes}if(safeTypes.length===0){showModal('提示','请至少选择一种大纲题型！');return false}}else{const validTypeValues=['add','sub','multi','div','multiply','divide','mixed','mixed-2','mixed-3','bracket','fill','complex','four-mixed','carry','borrow','remainder','vertical','step','fraction-add','fraction-sub','fraction-mul','fraction-div'];const typeValidation=InputValidator.array(selectedTypes,validTypeValues,false);if(!typeValidation.valid||typeValidation.value.length===0){showModal('提示','请至少选择一种自定义题型！');return false}appState.selectedCustomTypes=typeValidation.value}const rangeCheck=InputValidator.number(appState.numberRange,{min:1,max:10000,fieldName:'数值范围'});if(!rangeCheck.valid)appState.numberRange=rangeCheck.value;if(selectedTypes.includes('remainder')&&appState.numberRange<10){showModal('⚠️ 范围过小','带余数的除法需要更大的数值范围（建议≥10），已自动调整为10');appState.numberRange=10;document.getElementById('numberRangeInput').value=10}const countCheck=InputValidator.number(appState.questionCount,{min:1,max:100,fieldName:'题目数量'});if(!countCheck.valid){appState.questionCount=countCheck.value;document.getElementById('questionCountInput').value=countCheck.value}if(appState.questionCount<1){showModal('提示','题目数量不能为0，请至少选择1道题！');return false}return true}
 
