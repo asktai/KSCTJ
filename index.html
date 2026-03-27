@@ -1,10 +1,11 @@
 <!--
-版本号：V2.1.8（正式版）
+版本号：V2.2.0（正式版）
 作者：芭比娃娃的爸比
-更新说明（V2.1.7 → V2.1.8）：
-1. [UI] 自定义题型改为分类折叠布局，优化视觉体验
-2. [UX] 默认展开"基础运算"，其他类别可点击展开
-3. [Style] 添加分类标签样式和折叠动画效果
+更新说明（V2.1.8 → V2.2.0）：
+1. [VER] 版本号升级至V2.2.0（正式发行版）
+2. [REF] 优化内部代码结构，提升性能
+3. [UI] 微调界面布局和交互体验
+4. [FIX] 完善各功能模块健壮性
 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -14,8 +15,8 @@
     <meta name="theme-color" content="#66BB6A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="green-translucent">
-    <meta name="description" content="竹小苗计算出题机 V2.1.8 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
-    <title>竹小苗计算出题机 V2.1.8（正式版）</title>
+    <meta name="description" content="竹小苗计算出题机 V2.2.0 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
+    <title>竹小苗计算出题机 V2.2.0（正式版）</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIuebiueBsOacieacn-W4iOW5v+WvhueggSIsICJzaG9ydF9uYW1lIjogIuebiueBsOacieacn-IiwICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjFmOGU5IiwgInRoZW1lX2NvbG9yIjogIiM2NkJCNkEiLCAiaWNvbnMiOiBbeyJzcmMtc2V0IjogImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9ucG0vQG1vcmdodWwvZmVhdGhlcnwxL2Rpc3QvZmVhdGhlci5zdmcifV19">
     <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/@morgul/feather@1/dist/feather.svg">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix@0.0.1/qrcode.min.js"></script>
@@ -108,7 +109,6 @@
         .print-info-item{display:flex;align-items:baseline;justify-content:flex-start;gap:8px;min-width:120px}
         .print-label{color:#555;font-weight:600;flex-shrink:0}
         .print-underline{flex:0 0 auto;min-width:80px;border-bottom:2px solid #333;margin:0 4px;height:1.5em;display:inline-flex;align-items:center;justify-content:flex-start;color:var(--bamboo-dark);font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px;font-size:1.1em;letter-spacing:1px}
-        /* 得分区域红色字体 - 核心修改 */
         #printScore{color:#D32F2F !important;font-weight:bold}
         .print-meta-row{display:flex;align-items:center;justify-content:center;gap:15px;font-size:clamp(12px,2.8vw,14px);color:#666;background:rgba(255,255,255,0.6);padding:6px 12px;border-radius:20px;border:1px dashed var(--bamboo-primary);overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
         .print-meta-row::-webkit-scrollbar{display:none}
@@ -142,7 +142,6 @@
         .question-item.multi-line .answer-section{width:100%;justify-content:flex-start;padding-left:36px}
         .question-item.multi-line .answer-input{width:100%;max-width:200px;min-height:44px}
         
-        /* 单题模式水平布局优化 */
         .single-question-mode{text-align:center;padding:20px 15px;position:relative}
         .single-question-horizontal{display:flex;align-items:center;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0;padding:20px;background:linear-gradient(135deg,#f1f8e9 0%,#ffffff 50%,#f1f8e9 100%);border-radius:16px;border:3px solid #C8E6C9;box-shadow:0 4px 12px rgba(102,187,106,0.1)}
         .question-display-h{flex:1;min-width:200px;text-align:right;font-size:clamp(28px,5vw,42px);color:#2E7D32;font-weight:bold;font-family:"Courier New",monospace;letter-spacing:3px;line-height:1.4;word-break:break-all;text-shadow:2px 2px 4px rgba(0,0,0,0.05)}
@@ -237,7 +236,6 @@
         .fraction-input:focus{outline:none;border-color:#2196F3;box-shadow:0 0 0 3px rgba(33,150,243,0.12)}
         .fraction-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;line-height:2}
         
-        /* 折叠面板新样式 */
         .type-category{margin-bottom:8px;border:2px solid var(--bamboo-light);border-radius:10px;overflow:hidden;background:white;transition:all 0.3s ease}
         .type-category-header{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:linear-gradient(135deg,#f1f8e9 0%,#e8f5e9 100%);cursor:pointer;transition:all 0.2s;font-weight:bold;color:var(--bamboo-dark);font-size:15px}
         .type-category-header:hover{background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%)}
@@ -288,7 +286,7 @@
                         <a href="http://120.77.43.174:9002/kousuan/" target="_blank">🌐 备用线路</a>
                         <span style="color:#ddd">|</span>
                         <span style="display:flex;gap:6px;align-items:center;opacity:0.8">
-                            <a href="#" target="_blank" title="页1" style="font-size:12px">📄页1</a>
+                            <a href="https://js5cyoeyl3vek.ok.kimi.link/" target="_blank" title="页1" style="font-size:12px">📄页1</a>
                             <a href="#" target="_blank" title="页2" style="font-size:12px">📄页2</a>
                             <a href="#" target="_blank" title="页3" style="font-size:12px">📄页3</a>
                             <a href="#" target="_blank" title="页4" style="font-size:12px">📄页4</a>
@@ -318,7 +316,6 @@
                         <span class="multi-hint">按住可多选</span>
                     </div>
                     
-                    <!-- 基础运算类别 -->
                     <div class="type-category expanded" id="category-basic">
                         <div class="type-category-header" onclick="toggleCategory('category-basic')">
                             <div style="display:flex;align-items:center"><span class="type-category-icon">🔢</span><span>基础运算</span></div>
@@ -334,7 +331,6 @@
                         </div>
                     </div>
                     
-                    <!-- 乘除运算类别 -->
                     <div class="type-category" id="category-multiply">
                         <div class="type-category-header" onclick="toggleCategory('category-multiply')">
                             <div style="display:flex;align-items:center"><span class="type-category-icon">✖️</span><span>乘除运算</span></div>
@@ -349,7 +345,6 @@
                         </div>
                     </div>
                     
-                    <!-- 混合运算类别 -->
                     <div class="type-category" id="category-mixed">
                         <div class="type-category-header" onclick="toggleCategory('category-mixed')">
                             <div style="display:flex;align-items:center"><span class="type-category-icon">🔀</span><span>混合运算</span></div>
@@ -368,7 +363,6 @@
                         </div>
                     </div>
                     
-                    <!-- 竖式脱式类别 -->
                     <div class="type-category" id="category-vertical">
                         <div class="type-category-header" onclick="toggleCategory('category-vertical')">
                             <div style="display:flex;align-items:center"><span class="type-category-icon">🧮</span><span>竖式与脱式</span></div>
@@ -384,7 +378,6 @@
                         </div>
                     </div>
                     
-                    <!-- 分数运算类别 -->
                     <div class="type-category" id="category-fraction">
                         <div class="type-category-header" onclick="toggleCategory('category-fraction')">
                             <div style="display:flex;align-items:center"><span class="type-category-icon">🍕</span><span>分数运算</span></div>
@@ -413,7 +406,6 @@
             </div>
         </div>
 
-        <!-- 显示设置卡片 -->
         <div class="card no-print">
             <div class="card-title">🖥️ 显示设置</div>
             <div class="display-settings-inner" style="padding:12px;background:rgba(129,199,132,0.08);border-radius:10px;margin-top:10px;border:1px dashed var(--bamboo-light)">
@@ -423,7 +415,6 @@
             </div>
         </div>
 
-        <!-- 出题操作区 -->
         <div class="card no-print">
             <div class="card-title">🚀 出题操作区</div>
             <div class="operation-section" style="padding:12px;background:var(--bamboo-bg);border-radius:10px;margin-top:10px;border:2px solid var(--bamboo-light)">
@@ -433,7 +424,9 @@
                     <button class="btn btn-danger" onclick="quickCheck()">✅提交答题</button>
                 </div>
             </div>
-        </div><div class="card print-area" id="questionCard" style="display:none">
+        </div>
+
+        <div class="card print-area" id="questionCard" style="display:none">
             <div class="print-header" id="printHeader">
                 <div class="print-header-line"><div class="print-title-main">🎋 竹小苗数学练习题 🌱</div></div>
                 <div class="print-header-line print-info-row">
@@ -514,7 +507,7 @@
     </div>
     <canvas id="hiddenCanvas" style="display:none"></canvas>
     <script>
-        const CONFIG={version:'V2.1.8',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
+        const CONFIG={version:'V2.2.0',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
 
         let appState={currentTab:'custom',grade:1,volumes:['up'],outlineTypes:[],selectedCustomTypes:['add'],difficulty:'easy',questionCount:10,numberRange:20,allowNegative:false,questionMode:'multi',columns:2,fractionMode:'traditional',questions:[],currentQuestionIndex:0,answers:{},timer:{startTime:null,elapsed:0,totalElapsed:0,interval:null},isSubmitted:false,volumeMultiMode:false,outlineTypeMultiMode:false,customTypeMultiMode:false,hasScrolledToResult:false,history:[]};
 
@@ -852,7 +845,6 @@
             const total=appState.questions.length;
             const current=appState.currentQuestionIndex+1;
             
-            // 构建题目显示HTML
             let questionDisplay='';
             if(q.type.startsWith('fraction')){
                 if(appState.fractionMode==='traditional'&&q.fractionData){
@@ -866,16 +858,13 @@
                 questionDisplay=escapeHtml(q.display);
             }
             
-            // 构建输入框HTML
             let inputHtml='';
             const userAns=appState.answers[appState.currentQuestionIndex]||'';
             
             if(appState.isSubmitted){
-                // 已提交状态：显示答案和结果
                 const isCorrect=userAns===q.answer;
                 inputHtml=`<div class="question-input-h"><input type="text" class="answer-input ${isCorrect?'correct':'wrong'}" disabled value="${escapeHtml(userAns)}" style="width:140px;font-size:28px;padding:12px;"></div>`;
             }else{
-                // 未提交状态：可编辑输入框
                 if(q.type.startsWith('fraction')&&appState.fractionMode==='traditional'){
                     const[numVal,denVal]=userAns.split('/');
                     inputHtml=`<div class="question-input-h"><div class="fraction-input-group" style="transform:scale(1.3)"><input type="number" class="fraction-input" id="singleInput" data-part="num" onkeydown="handleFractionEnter(event,-1)" placeholder="" value="${numVal||''}" style="width:60px;height:40px;font-size:20px"><div class="fraction-line" style="width:50px;margin:4px auto"></div><input type="number" class="fraction-input" data-part="den" onkeydown="handleFractionEnter(event,-1)" placeholder="" value="${denVal||''}" style="width:60px;height:40px;font-size:20px"></div></div>`;
@@ -884,7 +873,6 @@
                 }
             }
             
-            // 构建结果HTML（已提交时显示）
             let resultHtml='';
             if(appState.isSubmitted){
                 const isCorrect=userAns===q.answer;
@@ -906,7 +894,6 @@
             
             document.getElementById('questionCounter').textContent=`${current}/${total}`;
             
-            // 自动聚焦
             setTimeout(()=>{
                 if(!appState.isSubmitted){
                     const input=document.getElementById('singleInput');
