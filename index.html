@@ -1,11 +1,12 @@
 <!--
-版本号：V2.1.9（正式发行版）
+版本号：V2.1.8（正式发行版）
 作者：芭比娃娃的爸比
-更新说明（V2.1.8 → V2.1.9）：
-1. [UI] 出题按钮行独立显示，选题设置面板折叠后仍可操作
-2. [UX] 键盘快捷键提示框支持拖动定位
-3. [Fix] 优化面板折叠逻辑，重置后自动展开
-4. [UI] 版本号左对齐，增加页码导航预留位
+更新说明（V2.1.7 → V2.1.8）：
+1. [UI] 自定义题型改为分类折叠布局，优化视觉体验
+2. [UX] 分享功能智能判断：未答题显示邀请文案，已答题显示真实成绩
+3. [Fix] 分享链接固定使用在线版地址，避免本地文件路径无法访问问题
+4. [UI] 重置按钮移至出题区域，支持选题设置面板折叠/展开
+5. [UI] 版本信息栏优化布局，增加页码导航预留位
 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -15,8 +16,8 @@
     <meta name="theme-color" content="#66BB6A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="green-translucent">
-    <meta name="description" content="竹小苗计算出题机 V2.1.9 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
-    <title>竹小苗计算出题机 V2.1.9</title>
+    <meta name="description" content="竹小苗计算出题机 V2.1.8 - 专为小学生设计的数学练习工具，支持竖式脱式计算，可离线使用">
+    <title>竹小苗计算出题机 V2.1.8</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIuebiueBsOacieacn-W4iOW5v+WvhueggSIsICJzaG9ydF9uYW1lIjogIuebiueBsOacieacn-IiwCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiI2YxZjhlOSIsICJ0aGVtZV9jb2xvciI6ICIjNjZCQjZBIiwgImljb25zIjogW3sic3JjLXNldCI6ICJodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL0Btb3JnaHVsL2ZlYXRoZXJ8MS9kaXN0L2ZlYXRoZXIuc3ZnIn1dfQ==">
     <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/@morgul/feather@1/dist/feather.svg">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs2-fix@0.0.1/qrcode.min.js"></script>
@@ -215,9 +216,21 @@
         .tab-content.active{display:block}
         .progress-bar{width:100%;max-width:250px;height:8px;background:#e0e0e0;border-radius:4px;margin:20px auto 0;overflow:hidden}
         .progress-fill{height:100%;background:var(--bamboo-primary);transition:width 0.3;border-radius:4px}
-        .keyboard-shortcuts{position:fixed;bottom:20px;left:20px;background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:11px;color:#666;z-index:100;border:1px solid var(--bamboo-light);max-width:200px}
+        .keyboard-shortcuts{position:fixed;bottom:20px;left:20px;background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:11px;color:#666;z-index:100;border:1px solid var(--bamboo-light);max-width:200px;cursor:move;user-select:none;transition:transform 0.2s,box-shadow 0.2s}
+        .keyboard-shortcuts:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+        .keyboard-shortcuts.dragging{cursor:grabbing;opacity:0.7;transform:scale(1.05);box-shadow:0 6px 16px rgba(0,0,0,0.25)}
         .keyboard-shortcuts kbd{background:#eee;padding:2px 4px;border-radius:3px;border:1px solid #ccc;font-family:monospace;font-size:10px}
         @media (max-width:768px){.keyboard-shortcuts{display:none}}
+
+        /* 答题操作区按钮优化 */
+        .action-row-1 .btn, .action-row-2 .btn {padding:10px 15px;font-size:14px;min-height:42px}
+        .action-row-1 .btn {flex:1 1 23%}
+        .action-row-2 .btn {flex:1 1 30%}
+
+        /* 显示设置区按钮优化 */
+        .divider-section .btn-row-compact {gap:10px}
+        .divider-section .btn {padding:10px 16px;font-size:15px;min-height:44px;font-weight:bold}
+        .divider-section .btn-reset {padding:10px 16px;font-size:14px;min-height:44px}
         @media print{@page{margin:1cm;size:A4}body{background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:12pt}body *{visibility:hidden}.print-area,.print-area *{visibility:visible}.print-area{position:absolute;left:0;top:0;width:100%;margin:0;padding:0;box-shadow:none;border:none;background:white}.no-print,.floating-timer,.bamboo-leaf,.keyboard-shortcuts{display:none !important;visibility:hidden !important}.print-header{display:block !important;visibility:visible !important;background:linear-gradient(135deg,#f1f8e9 0%,#e8f5e9 100%) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;margin-bottom:15px;border:2px solid #388E3C !important;page-break-inside:avoid;break-inside:avoid}.print-header-line:first-child{margin-bottom:58px;border-bottom:1px solid rgba(56,142,60,0.2);justify-content:center;padding-left:0}.print-title-main{font-size:24pt;color:#1B5E20 !important}.print-info-row{font-size:14pt}.print-underline{border-bottom:1.5pt solid #000 !important;min-width:80px}#printScore{color:#D32F2F !important}.print-meta-row{font-size:11pt;background:rgba(200,230,201,0.3) !important;border:1px dashed #66BB6A !important}.question-grid{display:grid !important;gap:10px !important;width:100% !important}.question-grid.col-1{grid-template-columns:1fr !important}.question-grid.col-2{grid-template-columns:repeat(2,1fr) !important}.question-grid.col-3{grid-template-columns:repeat(3,1fr) !important}.question-grid.col-4{grid-template-columns:repeat(4,1fr) !important}.question-item{break-inside:avoid !important;page-break-inside:avoid !important;border:1px solid #ddd !important;background:#fafafa !important;padding:10px !important;font-size:12pt !important}.question-item.multi-line{page-break-inside:avoid}.answer-input{border:1.5pt solid #999 !important;background:white !important;color:#333 !important;width:70pt;min-height:28pt;font-size:12pt !important}.question-item.multi-line .answer-input{width:100% !important;max-width:150pt}.btn,.single-navigation,.result-panel,.student-info-card,.action-buttons-panel{display:none !important}.card-title{font-size:14pt;margin-bottom:10px;color:#2E7D32 !important}.result-icon{display:none !important}.correct-answer{display:none !important}.single-question-horizontal{border:2pt solid #388E3C !important;background:#f1f8e9 !important}}
         @media (max-width:768px){.container{padding:5px}.info-panel{grid-template-columns:1fr;text-align:center;padding:12px}.qr-code{display:flex;justify-content:center;margin:0 auto}.tabs{flex-wrap:wrap;gap:6px}.tab-group{width:100%;justify-content:flex-start}.btn-reset{padding:6px 12px;font-size:13px;margin-left:auto}.question-grid.col-4{grid-template-columns:repeat(2,1fr)}.question-grid.col-3{grid-template-columns:repeat(2,1fr)}.question-item{padding:10px 8px}.question-content{gap:6px}.question-text{font-size:15px}.answer-input{width:65px;min-height:36px;font-size:16px;padding:6px 4px}.print-header{padding:12px}.print-header-line:first-child{margin-bottom:12px;justify-content:center;padding-left:0}.print-info-row{gap:8px;font-size:13px}.print-underline{min-width:50px}.option-grid{grid-template-columns:repeat(2,1fr)}.btn-row-compact{gap:5px}.btn-row-compact .btn{padding:8px 2px;font-size:clamp(10px,3vw,13px)}.floating-timer{width:120px;padding:8px;border-radius:12px;top:80px;right:10px}.control-btn-square{width:38px;height:38px;font-size:18px}.control-value-input{min-width:70px;height:38px;font-size:16px}.student-info-header{grid-template-columns:1fr}.marquee-container{height:60px}.multi-switch{font-size:13px;padding:2px 6px}.range-hint{font-size:11px;margin-left:0;margin-top:4px;display:block}.timer-stats{font-size:14px}}
         @media (max-width:480px){.question-grid.col-2,.question-grid.col-3,.question-grid.col-4{grid-template-columns:1fr}.question-item{flex-direction:column}.question-content{width:100%;flex-wrap:wrap}.question-text{font-size:16px;white-space:normal;word-break:break-all;width:100%}.answer-section{width:100%;justify-content:flex-start;margin-top:8px;padding-left:36px}.answer-input{width:100%;max-width:200px}.main-title{font-size:20px}.header::before,.header::after{display:none}.print-info-row{flex-direction:column;align-items:flex-start;gap:6px}.print-info-item{width:100%;justify-content:flex-start}.print-underline{flex:0 0 auto}.print-header-line:first-child{margin-bottom:10px;justify-content:center;padding-left:0}.selector-btn{min-width:70px;padding:8px 4px;font-size:12px}.btn-row-compact .btn{font-size:clamp(9px,2.8vw,12px);padding:6px 1px}.range-hint{font-size:10px}.timer-stats{font-size:13px;padding:6px}}
@@ -276,34 +289,23 @@
         /* 分享码按钮特殊样式 */
         .btn-share-code{background:linear-gradient(135deg,#fff3e0 0%,#ffe0b2 100%);color:#ef6c00;border:2px solid #ffb74d}
         .btn-share-code:hover{background:linear-gradient(135deg,#ffe0b2 0%,#ffcc80 100%);box-shadow:0 4px 8px rgba(239,108,0,0.2)}
-        
-        /* 独立操作栏样式 */
-        .action-bar{background:linear-gradient(135deg,#ffffff 0%,#e8f5e9 100%);border-radius:var(--border-radius);padding:15px;margin-bottom:12px;box-shadow:var(--shadow);border:2px solid var(--bamboo-primary);border-left:4px solid var(--bamboo-primary);position:sticky;top:10px;z-index:100}
-        .action-bar .btn-row-compact{margin-top:0}
-        
-        /* 可拖动的键盘快捷键提示框 */
-        .keyboard-shortcuts{cursor:move;user-select:none;position:fixed;bottom:20px;left:20px;background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:11px;color:#666;z-index:100;border:1px solid var(--bamboo-light);max-width:200px;transition:box-shadow 0.2s,transform 0.2s}
-        .keyboard-shortcuts:hover{box-shadow:0 4px 12px rgba(0,0,0,0.2);transform:translateY(-2px)}
-        .keyboard-shortcuts.dragging{cursor:grabbing;opacity:0.8;box-shadow:0 6px 16px rgba(0,0,0,0.25);z-index:1000}
-        .keyboard-shortcuts kbd{background:#eee;padding:2px 4px;border-radius:3px;border:1px solid #ccc;font-family:monospace;font-size:10px}
-        @media (max-width:768px){.keyboard-shortcuts{display:none}}
     </style>
-<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
 <body>
     <div id="cdnErrorContainer" class="no-print" style="display:none"></div>
     <div id="leafContainer"></div>
-    <div class="keyboard-shortcuts no-print" id="keyboardShortcuts" title="拖动移动位置">
-            <div style="font-weight:bold;margin-bottom:6px;color:var(--bamboo-dark);display:flex;align-items:center;gap:4px">
+    <div class="keyboard-shortcuts no-print" id="keyboardShortcuts">
+            <div style="font-weight:bold;margin-bottom:6px;color:var(--bamboo-dark);display:flex;justify-content:space-between;align-items:center">
                 <span>⌨️ 快捷键</span>
-                <span style="font-size:9px;color:#999;margin-left:auto">📌拖动</span>
+                <span style="font-size:10px;color:#999;cursor:move">⋮⋮</span>
             </div>
             <div><kbd>Ctrl</kbd>+<kbd>P</kbd>打印</div>
             <div><kbd>Enter</kbd>提交/下一题</div>
             <div><kbd>←</kbd><kbd>→</kbd>切换题目</div>
             <div><kbd>Esc</kbd>关闭弹窗</div>
+            <div style="text-align:center;font-size:9px;color:#aaa;margin-top:4px">拖动移动</div>
         </div>
     <div class="floating-timer no-print" id="floatingTimer"><div class="timer-header"><span class="timer-icon-main">⏱️</span><span class="timer-title">计时器</span></div><div class="timer-row timer-current"><span class="timer-label-small">⏳单次</span><span class="timer-value" id="currentTimer">00:00</span></div><div class="timer-row timer-total-row"><span class="timer-label-small">⏱️累计</span><span class="timer-value" id="totalTimer">00:00</span></div><div class="drag-hint">❤拖动移动</div></div>
     <div class="celebration hidden" id="celebration"></div>
@@ -324,10 +326,10 @@
                     <span style="color:#ddd">|</span>
                     <a href="https://asktai.github.io/KSCTJ/" target="_blank">🌐 在线版</a>
                     <span style="color:#ddd">|</span>
-                    <a href="http://120.77.43.174:9002/kousuan/" target="_blank">🌐 演示版</a>
+                    <a href="http://120.77.43.174:9002/kousuan/" target="_blank">🌐 备用线路</a>
                     <span style="color:#ddd">|</span>
                     <span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap">
-                        <a href="#" onclick="showPagePlaceholder(1);return false;" style="opacity:0.6" title="页1预留">📄1</a>
+                        <a href="https://js5cyoeyl3vek.ok.kimi.link/" target="_blank" style="opacity:0.9" title="页1">📄1</a>
                         <a href="#" onclick="showPagePlaceholder(2);return false;" style="opacity:0.6" title="页2预留">📄2</a>
                         <a href="#" onclick="showPagePlaceholder(3);return false;" style="opacity:0.6" title="页3预留">📄3</a>
                         <a href="#" onclick="showPagePlaceholder(4);return false;" style="opacity:0.6" title="页4预留">📄4</a>
@@ -454,21 +456,17 @@
                 <div class="input-group" style="margin-bottom:0"><label class="input-label" style="font-size:12px">计算范围</label><div class="selector-group" style="margin-bottom:0"><div class="selector-btn positive active" onclick="setNegativeMode(false)" id="btn-positive">🛡️非负模式</div><div class="selector-btn negative" onclick="setNegativeMode(true)" id="btn-negative">⚔️允许负数</div></div></div>
             </div>
             <div class="divider-section">
-                <div class="input-group"><label class="input-label">🚀 出题设置</label><div class="option-grid"><div class="checkbox-item selected" onclick="setQuestionMode('multi',this)"><input type="radio" name="mode" checked value="multi"><span class="checkbox-icon">📋</span><span>多题模式</span></div><div class="checkbox-item" onclick="setQuestionMode('single',this)"><input type="radio" name="mode" value="single"><span class="checkbox-icon">📝</span><span>单题模式</span></div></div></div>
+                <div class="input-group"><label class="input-label" style="border-top:2px dashed var(--bamboo-light);padding-top:12px;margin-top:5px;display:block">🖥️ 显示设置</label><div class="option-grid"><div class="checkbox-item selected" onclick="setQuestionMode('multi',this)"><input type="radio" name="mode" checked value="multi"><span class="checkbox-icon">📋</span><span>多题模式</span></div><div class="checkbox-item" onclick="setQuestionMode('single',this)"><input type="radio" name="mode" value="single"><span class="checkbox-icon">📝</span><span>单题模式</span></div></div></div>
                 <div class="input-group" id="columnSelect"><label class="input-label">📊 显示列数</label><div class="option-grid"><div class="checkbox-item" onclick="setColumn(1,this)"><input type="radio" name="col" value="1"><span>单列</span></div><div class="checkbox-item selected" onclick="setColumn(2,this)"><input type="radio" name="col" checked value="2"><span>双列</span></div><div class="checkbox-item" onclick="setColumn(3,this)"><input type="radio" name="col" value="3"><span>三列</span></div><div class="checkbox-item" onclick="setColumn(4,this)"><input type="radio" name="col" value="4"><span>四列</span></div></div></div>
                 <div class="input-group" id="fractionModeSelect"><label class="input-label">🔢 分数显示模式</label><div class="option-grid"><div class="checkbox-item selected" onclick="setFractionMode('traditional',this)"><input type="radio" name="fractionMode" checked value="traditional"><span>分数线模式</span></div><div class="checkbox-item" onclick="setFractionMode('slash',this)"><input type="radio" name="fractionMode" value="slash"><span>斜线模式</span></div></div></div>
-            </div>
-        </div>
-            </div>
-        </div>
-        
-        <!-- 独立操作栏：出题按钮行（独立于选题设置面板） -->
-        <div class="action-bar no-print" id="actionBar">
-            <div class="btn-row-compact" style="margin-top:0">
+                <div class="btn-row-compact">
                 <button class="btn-reset" onclick="resetSettings()" title="重置所有设置">🔄 重置</button>
                 <button class="btn btn-blue" onclick="generateQuestions()">🚀 出题</button>
-                <button class="btn btn-danger" onclick="quickCheck()">✅ 提交</button>
+                <button class="btn btn-danger" onclick="quickCheck()">✅ 提交答题</button>
                 <button class="btn btn-secondary" onclick="showShareCodePlaceholder()" title="出题分享码（预留功能）" style="opacity:0.7">🔖 分享码</button>
+            </div>
+            </div>
+        </div>
             </div>
         </div>
         <div class="card print-area" id="questionCard" style="display:none">
@@ -504,15 +502,17 @@
         </div>
         <div class="action-buttons-panel no-print" id="actionButtonsPanel" style="display:none">
             <div class="action-title">✏️ 答题操作</div>
-            <div class="btn-row-compact">
-                <button class="btn btn-danger" onclick="detailedCheck()">📝批改</button>
-                <button class="btn btn-secondary" onclick="showSolution()">💡解题</button>
-                <button class="btn btn-secondary" onclick="redoCurrent()">🔄重做</button>
-                <button class="btn" onclick="printQuestions()">🖨️打印PDF</button>
-                <button class="btn btn-secondary" onclick="saveAsImage()">💾存图</button>
-                <button class="btn btn-wechat" onclick="shareToWeChat()">💬微信</button>
-                <button class="btn btn-secondary" onclick="shareToDingTalk()">📱钉钉</button>
-                </div>
+            <div class="btn-row-compact action-row-1">
+                <button class="btn btn-danger" onclick="detailedCheck()">📝 批改</button>
+                <button class="btn btn-secondary" onclick="showSolution()">💡 解题</button>
+                <button class="btn btn-secondary" onclick="redoCurrent()">🔄 重做</button>
+                <button class="btn" onclick="printQuestions()">🖨️ 打印PDF</button>
+            </div>
+            <div class="btn-row-compact action-row-2" style="margin-top:10px">
+                <button class="btn btn-secondary" onclick="saveAsImage()">💾 存图</button>
+                <button class="btn btn-wechat" onclick="shareToWeChat()">💬 微信</button>
+                <button class="btn btn-secondary" onclick="shareToDingTalk()">📱 钉钉</button>
+            </div>
             <div class="download-hint">打印/保存的文件名将自动包含精确时间戳（年月日_时分秒）</div>
         </div>
         <div class="result-panel no-print" id="resultPanel">
@@ -603,7 +603,7 @@
             showModal('🔖 出题分享码（预留）', '功能说明：\n生成唯一分享码，其他用户输入分享码可直接加载相同题目设置。\n\n适用场景：\n• 老师统一布置相同作业\n• 家长分享优质题组\n• 班级挑战相同题目\n\n此功能将在后续版本中上线，敬请期待！');
         }
         
-        const CONFIG={version:'V2.1.9（正式发行版）',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
+        const CONFIG={version:'V2.1.8（正式发行版）',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
 
         let appState={currentTab:'custom',grade:1,volumes:['up'],outlineTypes:[],selectedCustomTypes:['add'],difficulty:'easy',questionCount:10,numberRange:20,allowNegative:false,questionMode:'multi',columns:2,fractionMode:'traditional',questions:[],currentQuestionIndex:0,answers:{},timer:{startTime:null,elapsed:0,totalElapsed:0,interval:null},isSubmitted:false,volumeMultiMode:false,outlineTypeMultiMode:false,customTypeMultiMode:false,hasScrolledToResult:false,history:[]};
 
@@ -620,14 +620,11 @@
 
         const StorageManager={prefix:CONFIG.storagePrefix,getSize(){let total=0;for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);const value=localStorage.getItem(key);total+=(key.length+value.length)*2}return total},setItem(key,value){const fullKey=this.prefix+key;const jsonValue=JSON.stringify(value);try{localStorage.setItem(fullKey,jsonValue);return{success:true,method:'localStorage'}}catch(e){if(e.name==='QuotaExceededError'||e.code===22||e.message.includes('quota')){console.warn('[StorageManager] 存储配额已满，尝试清理旧数据...');this.cleanupOldHistory();try{localStorage.setItem(fullKey,jsonValue);return{success:true,method:'localStorage',cleaned:true}}catch(e2){console.error('[StorageManager] 清理后仍然失败，使用内存降级:',e2);window._fallbackStorage=window._fallbackStorage||new Map();window._fallbackStorage.set(fullKey,value);return{success:true,method:'memory',warning:'数据仅保存在内存中，刷新页面后将丢失'}}}throw e}},getItem(key){const fullKey=this.prefix+key;try{const item=localStorage.getItem(fullKey);if(item)return JSON.parse(item)}catch(e){console.warn('[StorageManager] 读取失败:',e)}if(window._fallbackStorage&&window._fallbackStorage.has(fullKey))return window._fallbackStorage.get(fullKey);return null},removeItem(key){const fullKey=this.prefix+key;try{localStorage.removeItem(fullKey)}catch(e){console.warn('[StorageManager] 删除失败:',e)}if(window._fallbackStorage)window._fallbackStorage.delete(fullKey)},cleanupOldHistory(){}};
 
-        document.addEventListener('DOMContentLoaded',function(){checkCDNErrors();document.getElementById('versionText').textContent=CONFIG.version;initMarquee();initLeaves();initTimerDrag();initKeyboardShortcutsDrag();ResizeManager.init();initVolumeSelect();updateOutlineOptions();initStudentSelects();loadStudentInfoFromStorage();updateDateTime();setInterval(updateDateTime,1000);document.addEventListener('keydown',handleKeyboard);updateEncouragement();initQRCode();checkPWAStatus();window.addEventListener('beforeunload',cleanupResources)});
+        document.addEventListener('DOMContentLoaded',function(){checkCDNErrors();document.getElementById('versionText').textContent=CONFIG.version;initMarquee();initLeaves();initTimerDrag();initKeyboardDrag();ResizeManager.init();initVolumeSelect();updateOutlineOptions();initStudentSelects();loadStudentInfoFromStorage();updateDateTime();setInterval(updateDateTime,1000);document.addEventListener('keydown',handleKeyboard);updateEncouragement();initQRCode();checkPWAStatus();window.addEventListener('beforeunload',cleanupResources)});
 
         function checkCDNErrors(){if(window.cdnLoadErrors&&window.cdnLoadErrors.length>0){const container=document.getElementById('cdnErrorContainer');let html='<div class="cdn-error-banner">';if(window.cdnLoadErrors.includes('qrcode'))html+='⚠️ 二维码生成库加载失败，二维码功能将不可用<br>';if(window.cdnLoadErrors.includes('html2canvas'))html+='⚠️ 截图功能库加载失败，保存图片功能将不可用<br>';html+='<button onclick="location.reload()">刷新页面重试</button></div>';container.innerHTML=html;container.style.display='block'}}
 
         function cleanupResources(){ResizeManager.destroy();if(appState.timer.interval)clearInterval(appState.timer.interval);document.removeEventListener('keydown',handleKeyboard)}
-
-        // 键盘快捷键框拖动功能
-        function initKeyboardShortcutsDrag(){const shortcuts=document.getElementById('keyboardShortcuts');if(!shortcuts)return;let isDragging=false,startX,startY,initialLeft,initialTop;shortcuts.addEventListener('mousedown',dragStart);shortcuts.addEventListener('touchstart',dragStart,{passive:false});function dragStart(e){e.preventDefault();if(e.type==='touchstart'){startX=e.touches[0].clientX;startY=e.touches[0].clientY}else{startX=e.clientX;startY=e.clientY}const rect=shortcuts.getBoundingClientRect();initialLeft=rect.left;initialTop=rect.top;isDragging=true;shortcuts.classList.add('dragging');document.addEventListener('mousemove',drag);document.addEventListener('mouseup',dragEnd);document.addEventListener('touchmove',drag,{passive:false});document.addEventListener('touchend',dragEnd)}function drag(e){if(!isDragging)return;e.preventDefault();let clientX,clientY;if(e.type==='touchmove'){clientX=e.touches[0].clientX;clientY=e.touches[0].clientY}else{clientX=e.clientX;clientY=e.clientY}const deltaX=clientX-startX;const deltaY=clientY-startY;let newLeft=initialLeft+deltaX;let newTop=initialTop+deltaY;const maxLeft=window.innerWidth-shortcuts.offsetWidth;const maxTop=window.innerHeight-shortcuts.offsetHeight;newLeft=Math.max(0,Math.min(newLeft,maxLeft));newTop=Math.max(0,Math.min(newTop,maxTop));shortcuts.style.left=newLeft+'px';shortcuts.style.top=newTop+'px';shortcuts.style.bottom='auto';shortcuts.style.right='auto'}function dragEnd(){isDragging=false;shortcuts.classList.remove('dragging');document.removeEventListener('mousemove',drag);document.removeEventListener('mouseup',dragEnd);document.removeEventListener('touchmove',drag);document.removeEventListener('touchend',dragEnd)}}
 
         function checkPWAStatus(){if('serviceWorker' in navigator)console.log('PWA支持已启用（需部署到服务器以启用离线功能）')}
 
@@ -681,6 +678,8 @@
         function createLeaf(container,index){if(container.children.length>=20)container.removeChild(container.firstChild);const leaf=document.createElement('div');leaf.className='bamboo-leaf';leaf.innerHTML='🍃';leaf.style.left=(Math.random()*100)+'%';leaf.style.animationDuration=(Math.random()*8+12)+'s';leaf.style.animationDelay=(Math.random()*10)+'s';leaf.style.fontSize=(Math.random()*10+16)+'px';container.appendChild(leaf)}
 
         function initTimerDrag(){const timer=document.getElementById('floatingTimer');let isDragging=false,startX,startY,initialLeft,initialTop;timer.addEventListener('mousedown',dragStart);timer.addEventListener('touchstart',dragStart,{passive:false});function dragStart(e){e.preventDefault();if(e.type==='touchstart'){startX=e.touches[0].clientX;startY=e.touches[0].clientY}else{startX=e.clientX;startY=e.clientY}const rect=timer.getBoundingClientRect();initialLeft=rect.left;initialTop=rect.top;isDragging=true;timer.classList.add('dragging');timer.style.animation='none';document.addEventListener('mousemove',drag);document.addEventListener('mouseup',dragEnd);document.addEventListener('touchmove',drag,{passive:false});document.addEventListener('touchend',dragEnd)}function drag(e){if(!isDragging)return;e.preventDefault();let clientX,clientY;if(e.type==='touchmove'){clientX=e.touches[0].clientX;clientY=e.touches[0].clientY}else{clientX=e.clientX;clientY=e.clientY}const deltaX=clientX-startX;const deltaY=clientY-startY;let newLeft=initialLeft+deltaX;let newTop=initialTop+deltaY;const maxLeft=window.innerWidth-timer.offsetWidth;const maxTop=window.innerHeight-timer.offsetHeight;newLeft=Math.max(0,Math.min(newLeft,maxLeft));newTop=Math.max(0,Math.min(newTop,maxTop));timer.style.left=newLeft+'px';timer.style.top=newTop+'px';timer.style.right='auto';timer.style.bottom='auto'}function dragEnd(){isDragging=false;timer.classList.remove('dragging');timer.style.animation='float-around 6s ease-in-out infinite';document.removeEventListener('mousemove',drag);document.removeEventListener('mouseup',dragEnd);document.removeEventListener('touchmove',drag);document.removeEventListener('touchend',dragEnd)}}
+
+        function initKeyboardDrag(){const kb=document.getElementById('keyboardShortcuts');if(!kb)return;let isDragging=false,startX,startY,initialLeft,initialTop;kb.addEventListener('mousedown',dragStart);kb.addEventListener('touchstart',dragStart,{passive:false});function dragStart(e){if(e.target.tagName==='KBD'||e.target.tagName==='DIV'&&e.target.parentNode===kb)return;e.preventDefault();if(e.type==='touchstart'){startX=e.touches[0].clientX;startY=e.touches[0].clientY}else{startX=e.clientX;startY=e.clientY}const rect=kb.getBoundingClientRect();initialLeft=rect.left;initialTop=rect.top;isDragging=true;kb.classList.add('dragging');document.addEventListener('mousemove',drag);document.addEventListener('mouseup',dragEnd);document.addEventListener('touchmove',drag,{passive:false});document.addEventListener('touchend',dragEnd)}function drag(e){if(!isDragging)return;e.preventDefault();let clientX,clientY;if(e.type==='touchmove'){clientX=e.touches[0].clientX;clientY=e.touches[0].clientY}else{clientX=e.clientX;clientY=e.clientY}const deltaX=clientX-startX;const deltaY=clientY-startY;let newLeft=initialLeft+deltaX;let newTop=initialTop+deltaY;const maxLeft=window.innerWidth-kb.offsetWidth;const maxTop=window.innerHeight-kb.offsetHeight;newLeft=Math.max(0,Math.min(newLeft,maxLeft));newTop=Math.max(0,Math.min(newTop,maxTop));kb.style.left=newLeft+'px';kb.style.top=newTop+'px';kb.style.right='auto';kb.style.bottom='auto'}function dragEnd(){isDragging=false;kb.classList.remove('dragging');document.removeEventListener('mousemove',drag);document.removeEventListener('mouseup',dragEnd);document.removeEventListener('touchmove',drag);document.removeEventListener('touchend',dragEnd)}}
 
         function switchTab(tab){appState.currentTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.getElementById(tab+'Tab').classList.add('active')}
 
