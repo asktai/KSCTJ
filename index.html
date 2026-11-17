@@ -1,5 +1,5 @@
 <!--
-版本号：V2.10.0
+版本号：V2.10.1
 作者：芭比娃娃的爸比
 更新说明（V2.8.1 → V2.9.0）：
 1. [NEW] 二维码升级为「微信扫码即用」：二维码内容不再是本地文件或一串码，而是可访问的在线网址——微信扫一扫即可打开出题机网页。在线打开时指向当前网址（部署到任意域名都对），本地打开时回退到官方在线版
@@ -100,7 +100,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="green-translucent">
     <meta name="description" content="竹小苗计算出题机 V2.7.0 - 专为小学生设计的数学练习工具，支持竖式脱式计算、6 位数字分享码，可离线使用">
-    <title>竹小苗计算出题机 V2.10.0（正式版）</title>
+    <title>竹小苗计算出题机 V2.10.1（正式版）</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIuebiueBsOacieacn-W4iOW5v+WvhueggSIsICJzaG9ydF9uYW1lIjogIuebiueBsOacieacn-IiwICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjFmOGU5IiwgInRoZW1lX2NvbG9yIjogIiM2NkJCNkEiLCAiaWNvbnMiOiBbeyJzcmMtc2V0IjogImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9ucG0vQG1vcmdodWwvZmVhdGhlcnwxL2Rpc3QvZmVhdGhlci5zdmcifV19">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%232f9e44'/%3E%3Ctext x='90' y='122' font-size='96' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3E%E7%AB%B9%3C/text%3E%3C/svg%3E">
     <style>
@@ -383,6 +383,19 @@
 .res-card .ra button{background:#fff;color:#1e7a30}
 .res-note{background:#fdf6ec;border:1px solid #f0dfc4;border-radius:10px;padding:11px 14px;font-size:12.5px;color:#8a6d1f;line-height:1.75;margin-top:18px;text-align:left}
 @media(max-width:640px){.res-grid{grid-template-columns:1fr}.res-panel{padding:18px}}
+
+/* V2.10.1 手机友好文本输入弹窗 */
+.tx-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10050;display:none;align-items:center;justify-content:center;padding:18px}
+.tx-mask.active{display:flex}
+.tx-box{background:#fff;border-radius:16px;padding:22px;width:min(420px,100%);box-shadow:0 12px 32px rgba(0,0,0,.28)}
+.tx-box h3{font-size:19px;color:#1B5E20;margin:0 0 8px;text-align:center}
+.tx-box .tx-desc{font-size:13px;color:#777;margin:0 0 14px;text-align:center}
+.tx-box input[type=text]{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border:2px solid #81C784;border-radius:10px;outline:none;color:#1B5E20;background:#fff}
+.tx-box input[type=text]:focus{border-color:#43A047;box-shadow:0 0 0 3px rgba(67,160,71,.15)}
+.tx-btns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.tx-btns button{min-width:88px;padding:9px 18px;font-size:15px;border-radius:9px;border:none;font-weight:600;cursor:pointer}
+.tx-ok{background:#43A047;color:#fff}
+.tx-cancel{background:#eef3ef;color:#45684c;border:1px solid #cfe0d2 !important}
     </style>
 <base target="_blank">
 <base target="_blank">
@@ -647,9 +660,21 @@
             </div>
         </div>
     </div>
+    <!-- V2.10.1 手机友好文本输入弹窗 -->
+    <div class="tx-mask" id="textPromptMask" onclick="if(event.target===this)txPromptCancel()">
+        <div class="tx-box">
+            <h3 id="txPromptTitle">输入</h3>
+            <p class="tx-desc" id="txPromptDesc">请输入后点确定</p>
+            <input type="text" id="txPromptInput" maxlength="50" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="在此输入" onkeydown="if(event.key==='Enter'){event.preventDefault();txPromptOk()}">
+            <div class="tx-btns">
+                <button class="tx-cancel" onclick="txPromptCancel()">取消</button>
+                <button class="tx-ok" onclick="txPromptOk()">确定</button>
+            </div>
+        </div>
+    </div>
     <canvas id="hiddenCanvas" style="display:none"></canvas>
     <script>
-        const CONFIG={version:'V2.10.0',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
+        const CONFIG={version:'V2.10.1',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
 
         // ===== V2.3.0 按需加载器：CDN 库仅在用到时加载，避免首屏阻塞 =====
         var __scriptCache={};
@@ -3341,7 +3366,43 @@ function buildSolution(q){
         function updateClassInput(select){handleCustomInput(select,'班级');saveStudentInfoToStorage();updatePrintHeader()}
         function updateNameInput(select){handleCustomInput(select,'姓名');saveStudentInfoToStorage();updatePrintHeader()}
 
-        function handleCustomInput(select,label){if(select.value==='custom'){const custom=prompt(`请输入${label}：`);if(custom&&custom.trim()!==''){const safe=InputValidator.string(custom,50);if(!safe.valid){showModal('⚠️ 输入错误',safe.error);select.selectedIndex=0;return}let exists=false;for(let i=0;i<select.options.length;i++){if(select.options[i].value===safe.value){select.value=safe.value;exists=true;break}}if(!exists){const option=document.createElement('option');option.value=safe.value;option.textContent=safe.value;select.insertBefore(option,select.options[1]);select.value=safe.value}}else{select.selectedIndex=0}}}
+        function handleCustomInput(select,label){
+            if(select.value!=='custom')return;
+            select.selectedIndex=0; /* 先复位，取消时保持“请选择” */
+            promptText(label,function(custom){
+                if(!custom||custom.trim()===''){return}
+                const safe=InputValidator.string(custom,50);
+                if(!safe.valid){showModal('⚠️ 输入错误',safe.error);return}
+                let exists=false;
+                for(let i=0;i<select.options.length;i++){if(select.options[i].value===safe.value){select.value=safe.value;exists=true;break}}
+                if(!exists){const option=document.createElement('option');option.value=safe.value;option.textContent=safe.value;select.insertBefore(option,select.options[1]);select.value=safe.value}
+                saveStudentInfoToStorage();updatePrintHeader();
+            });
+        }
+        /* V2.10.1 手机友好文本输入弹窗：替代原生 prompt()，避免手机上无法输入 */
+        var _txPromptCb=null;
+        function promptText(label,cb){
+            var mask=document.getElementById('textPromptMask');
+            var input=document.getElementById('txPromptInput');
+            if(!mask||!input){var c=window.prompt('请输入'+label+'：');if(cb)cb(c);return}
+            document.getElementById('txPromptTitle').textContent='请输入'+label;
+            document.getElementById('txPromptDesc').textContent='输入后将自动保存到本机';
+            input.value='';
+            _txPromptCb=cb||null;
+            mask.classList.add('active');
+            setTimeout(function(){try{input.focus();input.select()}catch(e){}},80);
+        }
+        function txPromptOk(){
+            var input=document.getElementById('txPromptInput');
+            var v=input?input.value:'';
+            var cb=_txPromptCb;_txPromptCb=null;
+            var mask=document.getElementById('textPromptMask');if(mask)mask.classList.remove('active');
+            if(cb)cb(v);
+        }
+        function txPromptCancel(){
+            _txPromptCb=null;
+            var mask=document.getElementById('textPromptMask');if(mask)mask.classList.remove('active');
+        }
 
         function updateEncouragement(){const box=document.getElementById('encouragementBox');if(box){const random=CONFIG.encouragements[Math.floor(Math.random()*CONFIG.encouragements.length)];box.textContent=random}}
 
