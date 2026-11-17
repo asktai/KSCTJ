@@ -1,6 +1,29 @@
 <!--
-版本号：V2.7.2
+版本号：V2.10.0
 作者：芭比娃娃的爸比
+更新说明（V2.8.1 → V2.9.0）：
+1. [NEW] 二维码升级为「微信扫码即用」：二维码内容不再是本地文件或一串码，而是可访问的在线网址——微信扫一扫即可打开出题机网页。在线打开时指向当前网址（部署到任意域名都对），本地打开时回退到官方在线版
+2. [NEW] 新增「扫码填码」二维码：在「我来答题」里生成，同学微信扫码打开在线版后会自动弹出分享码填写框，输入老师公布的 6 位码即可作答，无需手动找入口
+3. [NEW] 链接新增 #join=1 直达标记：打开带此标记的链接，自动弹出填码对话框并定位到输入框
+4. [OPT] 二维码提示文案改为明确的操作指引（扫码 → 打开 → 弹框/出题）
+
+更新说明（V2.8.0 → V2.8.1）：
+1. [FIX] 修复「复制链接 / 分享码」的核心缺陷：老师点「出题」出的题（真随机），与学生输码或用链接打开后出的题（码种子）对不上——老师发的是一套题，学生拿到的是另一套。现在生成码后老师端会按码种子对齐题目，做到「老师看到的 = 学生拿到的 = 链接打开的」完全一致
+2. [FIX] 标准码、竞赛码、链接三种入口全部对齐同一套题；此前只有「两个学生之间」一致，与老师端不一致的问题一并修复
+
+更新说明（V2.7.3 → V2.8.0）：
+1. [NEW] 分享码与竞赛码合并：只有一个「🔗 分享码」入口，发码时选「📝 标准练习」或「🏆 竞赛模式」，竞赛模式再选限时。原来的「🏆竞赛」按钮改为「📊成绩」，只负责收成绩与排行
+2. [NEW] 一个 6 位码同时表达玩法与设置：码里带模式标记，对方输码后自动识别——标准模式直接出题，竞赛模式先确认再计时，不用再区分「这是分享码还是竞赛码」
+3. [OPT] 界面重排：模式用两张卡片选择，限时用胶囊按钮，生成后一个码 + 一行说明（含模式与限时），按钮从 4 个减到 3 个
+4. [OPT] 「我来答题」输入框合并：6 位码与完整码/链接在同一页，输错有明确提示
+5. [WARN] 码格式升级：V2.8.0 之前的 6 位码不再通用，请用新版重新生成（旧竞赛链接 #race= 仍可打开）
+
+更新说明（V2.7.2 → V2.7.3）：
+1. [FIX] 同一个 6 位分享码、同一个竞赛码，原来每台设备各自随机出题，题目全不一样；全班做同一场竞赛却拿到不同卷子，分数没法比。现在分享码本身就是出题种子，同码必出同一套题
+2. [FIX] 竞赛模式整场统一题目：老师发的竞赛码，所有学生拿到的题、顺序、数值完全一致，成绩可以直接排名
+3. [OPT] 6 位码导入后仍可点「🚀出题」换一批，不影响日常随机练习
+4. [OPT] 6 位码面板新增说明：同一码同题、导入后可换题、显示偏好不随码传递
+
 更新说明（V2.7.1 → V2.7.2）：
 1. [FIX] 填空题的减法形式标答错误：原先把等号右边的结果当答案（如「73 - __ = 15」标答给了 15），学生填对 58 也判错。现改为正确答案，填空题型可放心使用
 2. [FIX] 分数加法 / 减法题的分子恒为分母的整数倍（如 90/10 + 42/6），题目实际退化成了整数加减。现改为真分数，并随机同分母与异分母
@@ -77,7 +100,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="green-translucent">
     <meta name="description" content="竹小苗计算出题机 V2.7.0 - 专为小学生设计的数学练习工具，支持竖式脱式计算、6 位数字分享码，可离线使用">
-    <title>竹小苗计算出题机 V2.7.2（正式版）</title>
+    <title>竹小苗计算出题机 V2.10.0（正式版）</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIuebiueBsOacieacn-W4iOW5v+WvhueggSIsICJzaG9ydF9uYW1lIjogIuebiueBsOacieacn-IiwICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjFmOGU5IiwgInRoZW1lX2NvbG9yIjogIiM2NkJCNkEiLCAiaWNvbnMiOiBbeyJzcmMtc2V0IjogImh0dHBzOi8vY2RuLmpzZGVsaXZyLm5ldC9ucG0vQG1vcmdodWwvZmVhdGhlcnwxL2Rpc3QvZmVhdGhlci5zdmcifV19">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%232f9e44'/%3E%3Ctext x='90' y='122' font-size='96' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3E%E7%AB%B9%3C/text%3E%3C/svg%3E">
     <style>
@@ -338,6 +361,28 @@
             .race-timer{font-size:19px;min-width:78px}
             .race-bar{padding:7px 8px}
         }
+
+/* ===== V2.10.0 更多入口 ===== */
+.res-open-btn{background:linear-gradient(135deg,#2f9e44,#1e7a30);color:#fff;border:none;border-radius:8px;padding:3px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.res-open-btn:hover{filter:brightness(1.08)}
+.res-mask{position:fixed;inset:0;background:rgba(12,32,20,.58);z-index:10000;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(2px)}
+.res-panel{background:#fff;border-radius:20px;width:min(920px,100%);max-height:92vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:26px 26px 30px}
+.res-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.res-head h2{font-size:24px;color:#1e7a30;margin:0}
+.res-x{background:none;border:none;font-size:26px;cursor:pointer;color:#888;line-height:1}
+.res-sub{font-size:13px;color:#6b7f74;margin:0 0 20px}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.res-card{border:1px solid #e2ece5;border-radius:15px;padding:18px;text-align:center;background:#f9fdfa}
+.res-card .rq{width:168px;height:168px;margin:0 auto 12px;background:#fff;border:1px solid #e2ece5;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:8px}
+.res-card .rq img{width:100%;height:100%;object-fit:contain}
+.res-card .rn{font-size:18px;font-weight:800;color:#1e7a30;margin-bottom:4px}
+.res-card .rd{font-size:13px;color:#5c7265;margin-bottom:12px;min-height:18px}
+.res-card .ra{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.res-card .ra a,.res-card .ra button{font-size:13px;font-weight:700;padding:7px 15px;border-radius:8px;text-decoration:none;cursor:pointer;border:1px solid #2f9e44}
+.res-card .ra a{background:#2f9e44;color:#fff}
+.res-card .ra button{background:#fff;color:#1e7a30}
+.res-note{background:#fdf6ec;border:1px solid #f0dfc4;border-radius:10px;padding:11px 14px;font-size:12.5px;color:#8a6d1f;line-height:1.75;margin-top:18px;text-align:left}
+@media(max-width:640px){.res-grid{grid-template-columns:1fr}.res-panel{padding:18px}}
     </style>
 <base target="_blank">
 <base target="_blank">
@@ -377,6 +422,8 @@
                         <a href="https://asktai.github.io/KSCTJ/" target="_blank">🌐 在线版</a>
                         <span style="color:#ddd">|</span>
                         <a href="http://120.77.43.174:9002/kousuan/" target="_blank">🌐 备用线路</a>
+                        <span style="color:#ddd">|</span>
+                        <button type="button" class="res-open-btn no-print" onclick="showResources()">📱 更多入口</button>
                         <span style="color:#ddd">|</span>
                         <span style="display:flex;gap:6px;align-items:center;opacity:0.8">
                             <a href="https://js5cyoeyl3vek.ok.kimi.link/" target="_blank" title="页1" style="font-size:12px">📄页1</a>
@@ -514,7 +561,7 @@
                 <div class="btn-row-compact" style="display:flex;gap:10px">
                     <button class="btn btn-blue" id="generateBtn" onclick="generateQuestions()">🚀出题</button>
                     <button class="btn" onclick="showShareCode()" style="background:linear-gradient(135deg,#9C27B0 0%,#7B1FA2 100%);color:white">🔗分享码</button>
-                    <button class="btn" onclick="showRaceCenter('gen')" style="background:linear-gradient(135deg,#D32F2F 0%,#B71C1C 100%);color:white">🏆竞赛</button>
+                    <button class="btn" onclick="showRaceCenter('score')" style="background:linear-gradient(135deg,#D32F2F 0%,#B71C1C 100%);color:white">📊成绩</button>
                     <button class="btn btn-danger" onclick="quickCheck()">✅提交答题</button>
                 </div>
             </div>
@@ -602,7 +649,7 @@
     </div>
     <canvas id="hiddenCanvas" style="display:none"></canvas>
     <script>
-        const CONFIG={version:'V2.7.2',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
+        const CONFIG={version:'V2.10.0',author:'芭比娃娃的爸比',storagePrefix:'zhuxiaomiao_',marqueeTexts:[{text:"1.孩子啊孩子，你真牛掰，潜力无限，似宇宙浩瀚无边！相信自己，准没错哒～",color:"#E91E63"},{text:"2.遇到难题别慌张，开动脑筋想办法，爸爸妈妈永远是你最坚实的后盾。",color:"#FF9800"},{text:"3.《勤学》汪洙：学海无涯勤作舟，书山有路志为梯。莫待白头空悲切，少年正是读书时。",color:"#2196F3"},{text:"4.比昨天的你更优秀一点点就好，坚持下去，你会发现自己能变得无比强大哟！",color:"#4CAF50"},{text:"5.《劝学》颜真卿：三更灯火五更鸡，正是少年读书时。墨香染透晨光里，今日苦读终成诗。",color:"#9C27B0"},{text:"6.别怕摔倒，再爬起，坚持下去，就能解锁\"成功小达人\"称号！",color:"#FF5722"},{text:"7.满江红·写怀   宋·岳飞      怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。",color:"#F44336"}],teachingRequirements:{1:{up:['10以内加法','10以内减法','20以内加法','20以内减法','20以内不退位减法'],down:['20以内退位减法','20以内加减混合运算','平10法和破10法','100以内加减法']},2:{up:['100以内连加连减混合','乘法认识和口诀','除法认识和求商'],down:['有余数的除法','万以内数的加减法']},3:{up:['万以内连加连减混合','乘除加减两步混合','一位数乘两三位数','元角分小数加减'],down:['一位数除两三位数','两位数乘两位数','同分母分数加减']},4:{up:['三位数乘两位数','三位数除以两位数','运算律及混合运算','常见数量关系'],down:['小数加减法','小数乘法']},5:{up:['分数加减法','分数乘法','分数除法'],down:['分数加减法','分数乘法','分数除法']},6:{up:['分数混合运算','百分数应用'],down:[]}},studentList:{schools:["中山市实验小学","中山东区竹苑小学","中山石岐实验小学","中山市石岐中心小学","广州市南沙区湾区实验学校","广州外国语学校附属学校","华南师范大学附属南沙小学","广州市海珠区实验小学","深圳实验学校小学部","深圳外国语小学","中山市小榄镇中心小学","中山龙瑞小学","中山石岐东区柏苑中心小学","中山市东区朗晴小学","中山市三鑫凯茵学校","中山市卓雅外国语学校","中山市三乡载德小学","三乡镇光后中心小学","大布小学（中山三乡）"],classes:["一（1）班","一（2）班","一（3）班","一（4）班","二（1）班","二（2）班","三（1）班","三（2）班","四（1）班","四（2）班","五（1）班","五（2）班","六（1）班","六（2）班"],names:["思灵","宝璐","依珞","落英","若竹","晏晏","兹佩","予兮","菀青","琳琅","依斐","Lucy","Yuki","Marli","Alice","Hilda","Jim"]},encouragements:["💪 加油！你是最棒的！","🌟 相信自己，你比想象中更强大！","🎯 专注当下，每一题都是进步！","🌈 错了没关系，重要的是你在学习！","🚀 冲刺吧，少年！未来属于你！","🎋 像竹子一样，节节高升！","✨ 星光不问赶路人，时光不负有心人。"]};
 
         // ===== V2.3.0 按需加载器：CDN 库仅在用到时加载，避免首屏阻塞 =====
         var __scriptCache={};
@@ -925,7 +972,7 @@
             }
         }
         // ==================== V2.5.0 分享（6 位数字码 + 完整码） ====================
-        const ShareState={tab:'gen',code:'',link:'',withQ:true,code6:'',link6:'',desc6:''};
+        const ShareState={tab:'gen',code:'',link:'',withQ:true,code6:'',link6:'',desc6:'',mode:'std',limitIdx:2};
 
         /* ---------- 6 位数字码：只承载「设置」，零后端、跨设备 ---------- */
         const ShareCode6=(function(){
@@ -1207,6 +1254,24 @@
 
         function shareBaseUrl(){try{return location.href.split('#')[0]}catch(e){return location.href}}
 
+        /* V2.9.0 二维码落地网址：微信扫码必须打开可访问的网页。
+           在线上（http/https）打开时用当前网址——部署到任意域名/路径都正确；
+           本地 file:// 打开时回退到官方在线版，避免二维码里是微信打不开的本地路径。 */
+        const OFFICIAL_ONLINE_BASE='https://asktai.github.io/KSCTJ/';
+        function shareLandingBase(){
+            try{
+                if(location&&/^https?:$/i.test(location.protocol)&&location.host){
+                    return location.href.split('#')[0];
+                }
+            }catch(e){}
+            return OFFICIAL_ONLINE_BASE;
+        }
+        function _qrBase(){var b=shareLandingBase()||OFFICIAL_ONLINE_BASE;if(b.charAt(b.length-1)==='#')b=b.slice(0,-1);return b}
+        /* 分享码二维码内容：线上网址 + #code=码 */
+        function shareQRLink(code){return _qrBase()+'#code='+encodeURIComponent(code||'')}
+        /* 「扫码填码」二维码内容：线上网址 + #join=1（打开即弹填写框） */
+        function joinQRLink(){return _qrBase()+'#join=1'}
+
         function pageToast(msg){
             try{
                 var el=document.getElementById('pageToast');
@@ -1235,14 +1300,21 @@
             shareToast._t=setTimeout(function(){el.textContent=''},6000);
         }
 
+        function setShareTabLook(el,on){
+            if(!el)return;
+            el.className='btn';
+            if(on){el.style.background='';el.style.color='';el.style.border='';el.style.boxShadow=''}
+            else{el.style.background='#fff';el.style.color='#6b7d71';el.style.border='1.4px solid #dbe8df';el.style.boxShadow='none'}
+        }
+
         function shareSwitch(tab){
             ShareState.tab=tab;
             var gen=document.getElementById('sharePaneGen'),imp=document.getElementById('sharePaneImp');
             var bg=document.getElementById('shareTabGen'),bi=document.getElementById('shareTabImp');
             if(gen)gen.style.display=tab==='gen'?'block':'none';
             if(imp)imp.style.display=tab==='imp'?'block':'none';
-            if(bg)bg.className=tab==='gen'?'btn':'btn btn-secondary';
-            if(bi)bi.className=tab==='imp'?'btn':'btn btn-secondary';
+            if(bg)setShareTabLook(bg,tab==='gen');
+            if(bi)setShareTabLook(bi,tab==='imp');
             if(tab==='imp'){
                 var inp=document.getElementById('code6Input');
                 if(inp)setTimeout(function(){try{inp.focus()}catch(e){}},120);
@@ -1270,26 +1342,99 @@
             }
         }
 
+        function uniDesc(r){
+            var base=(r&&r.cfg&&r.cfg.desc)||'';
+            if(r&&r.mode==='race')return '🏆 竞赛 · '+fmtLimit(r.limitSec)+' · '+base;
+            return '📝 标准练习 · '+base;
+        }
+
+        function shareResetCode(){
+            ShareState.code6='';ShareState.link6='';ShareState.desc6='';
+            var w=document.getElementById('s6Wrap');if(w)w.style.display='none';
+            var q=document.getElementById('shareQRBox');if(q){q.style.display='none';q.innerHTML=''}
+            var b=document.getElementById('s6GenBtn');if(b){b.disabled=false;b.textContent='🎲 生成分享码'}
+            var t=document.getElementById('shareToast');if(t)t.textContent='';
+        }
+
+        function renderShareLimits(){
+            var box=document.getElementById('shLimitChips');if(!box)return;
+            box.innerHTML='';
+            RACE_LIMITS.forEach(function(sec,i){
+                var b=document.createElement('button');
+                b.type='button';
+                b.textContent=sec<=0?'不限时':(sec/60)+' 分钟';
+                b.className=(i===ShareState.limitIdx?'on':'');
+                b.onclick=function(){ShareState.limitIdx=i;renderShareLimits();shareResetCode()};
+                box.appendChild(b);
+            });
+        }
+
+        function shareSetMode(m){
+            ShareState.mode=(m==='race')?'race':'std';
+            var a=document.getElementById('shModeStd'),b=document.getElementById('shModeRace');
+            if(a)a.classList.toggle('on',ShareState.mode==='std');
+            if(b)b.classList.toggle('on',ShareState.mode==='race');
+            var lw=document.getElementById('shLimitWrap');if(lw)lw.style.display=ShareState.mode==='race'?'block':'none';
+            var ls=document.getElementById('shareLongSec');if(ls)ls.style.display=ShareState.mode==='race'?'none':'block';
+            if(ShareState.mode==='race')renderShareLimits();
+            shareResetCode();
+        }
+
+        /* 收到码后分流：标准 → 直接出题；竞赛 → 确认后开赛 */
+        function applyUni(res,fromLink,code){
+            if(res&&res.mode==='race'){
+                showModal('🏆 收到竞赛码',String(code)+'\n\n'+uniDesc(res)+'\n\n开始后立即计时，设置会锁住；交卷后把成绩单发回老师。',true,function(){
+                    try{raceStart({code:String(code),cfg:res.cfg,limitSec:res.limitSec})}
+                    catch(e){showModal('❌ 竞赛启动失败',(e&&e.message)||'无法开始竞赛')}
+                });
+                return;
+            }
+            if(fromLink){
+                showModal('🔗 收到分享码',String(code)+'\n\n'+uniDesc(res)+'\n\n导入会覆盖当前设置，并得到与对方相同的一套题。是否导入？',true,function(){applyCode6(res.cfg,true,code)});
+                return;
+            }
+            applyCode6(res.cfg,false,code);
+        }
+
         function shareGenerate6(){
             var btn=document.getElementById('s6GenBtn');
             var res=null;
-            try{res=ShareCode6.encode(currentShareCfg())}
+            try{res=UniCode.encode(currentShareCfg(),ShareState.mode,RACE_LIMITS[ShareState.limitIdx])}
             catch(e){
                 shareToast(e&&e.message?e.message:'当前设置无法生成 6 位码',false);
                 return;
             }
             ShareState.code6=res.code;
             ShareState.link6=shareBaseUrl()+'#code='+res.code;
-            ShareState.desc6=res.cfg.desc;
+            ShareState.desc6=uniDesc(res);
             render6(res.code);
-            var d=document.getElementById('s6Desc');if(d)d.textContent=res.cfg.desc;
+            var d=document.getElementById('s6Desc');if(d)d.textContent=ShareState.desc6;
             var wrap=document.getElementById('s6Wrap');if(wrap)wrap.style.display='block';
             var note=document.getElementById('s6Note');
             if(note){
-                note.innerHTML=res.notes.length?('· '+res.notes.join('<br>· ')+'<br>· 列数、单题模式、负数开关等显示偏好不随 6 位码传递'):'';
+                var tips=['· <b>本页题目已与码对齐</b>：你看到的，就是对方打开链接 / 输码拿到的同一套题'];
+                if(res.mode==='race'){
+                    tips.push('· 学生输码后<b>立即开始计时</b>，交卷生成成绩单');
+                    tips.push('· 时间到自动交卷；竞赛中不能改设置');
+                }else{
+                    tips.push('· 导入后想换题，点「🚀出题」即可重新随机');
+                }
+                tips.push('· 列数、单题模式、负数开关等显示偏好不随码传递');
+                note.innerHTML=(res.notes.length?('· '+res.notes.join('<br>· ')+'<br>'):'')+tips.join('<br>');
             }
-            if(btn){btn.disabled=true;btn.textContent='✓ 已生成（改设置后会变）'}
-            shareToast('已生成 6 位码，念给对方或复制发送都行',true);
+            // ---- V2.8.1：老师端按码种子对齐题目，保证所见即所得 ----
+            // 此前老师点「出题」用真随机，学生用码种子，两套题对不上。
+            // 生成码后先用码的 cfg 覆盖设置（含被档位化的题量），再用码种子重出：
+            // 标准=s6|码，竞赛=race|码。这样老师所见=链接所得=学生所得。
+            try{
+                var dcfg=UniCode.decode(res.code);
+                ShareCode.applyConfig(dcfg.cfg);
+                var alignSeed=(res.mode==='race'?('race|'):('s6|'))+res.code;
+                generateQuestions(alignSeed);
+                ShareState.alignedCode=res.code;
+            }catch(e){console.warn('[分享码] 题目对齐失败',e)}
+            if(btn){btn.disabled=true;btn.textContent='✓ 已生成（题目已与码对齐）'}
+            shareToast(res.mode==='race'?'已生成竞赛码，本页题目已与码对齐；发给学生即可开赛':'已生成分享码，本页题目已与码对齐；对方打开是同一套题',true);
         }
 
         function shareCopy6(){shareCopy('code6')}
@@ -1328,8 +1473,9 @@
         function shareShowQR(kind){
             var box=document.getElementById('shareQRBox');
             if(!box)return;
-            var link=(kind==='long')?(ShareState.link||''):(ShareState.link6||ShareState.link||'');
-            if(!link){shareToast('请先点上方按钮生成',false);return}
+            var raw=(kind==='long')?(ShareState.code||''):(ShareState.code6||'');
+            if(!raw){shareToast('请先点上方按钮生成',false);return}
+            var link=shareQRLink(raw);
             box.style.display='block';
             box.innerHTML='<span style="font-size:12px;color:#7a8a7f">二维码生成中…</span>';
             loadScriptOnce(ShareCode.qrUrl,'qrcode',CDN_SRC.qrcode.slice(1)).then(function(){
@@ -1341,13 +1487,38 @@
                     new QRCode(holder,{text:link,width:236,height:236,colorDark:'#2e7d32',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L});
                     var tip=document.createElement('div');
                     tip.style.cssText='font-size:11px;color:#8a978d;margin-top:8px';
-                    tip.textContent='手机扫码即可打开同一份设置';
+                    tip.textContent='微信扫一扫 → 打开在线出题机 → 自动识别码并出题';
                     box.appendChild(tip);
                 }catch(e){
                     box.innerHTML='<span style="font-size:12px;color:#c62828">二维码生成失败，请改用「复制链接」</span>';
                 }
             }).catch(function(){
                 box.innerHTML='<span style="font-size:12px;color:#c62828">二维码组件需要联网加载，当前不可用（复制链接同样有效）</span>';
+            });
+        }
+
+        /* V2.9.0 「扫码填码」二维码：扫码 → 在线版 → 自动弹出填写框 */
+        function shareShowJoinQR(){
+            var box=document.getElementById('shareJoinQRBox');
+            if(!box)return;
+            box.style.display='block';
+            box.innerHTML='<span style="font-size:12px;color:#7a8a7f">二维码生成中…</span>';
+            loadScriptOnce(ShareCode.qrUrl,'qrcode',CDN_SRC.qrcode.slice(1)).then(function(){
+                try{
+                    box.innerHTML='';
+                    var holder=document.createElement('div');
+                    holder.style.cssText='display:inline-block;padding:8px;background:#fff;border:1px solid #f2e2bd;border-radius:10px';
+                    box.appendChild(holder);
+                    new QRCode(holder,{text:joinQRLink(),width:216,height:216,colorDark:'#8a6d1f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+                    var tip=document.createElement('div');
+                    tip.style.cssText='font-size:11px;color:#8a978d;margin-top:8px;line-height:1.6';
+                    tip.textContent='微信扫一扫 → 打开在线出题机 → 自动弹出填写框';
+                    box.appendChild(tip);
+                }catch(e){
+                    box.innerHTML='<span style="font-size:12px;color:#c62828">二维码生成失败，请手动让同学打开在线版</span>';
+                }
+            }).catch(function(){
+                box.innerHTML='<span style="font-size:12px;color:#c62828">二维码组件需要联网加载，当前不可用</span>';
             });
         }
 
@@ -1450,13 +1621,13 @@
         }
 
         /* 6 位码：还原设置并直接按同规则出题 */
-        function applyCode6(cfg,fromLink){
+        function applyCode6(cfg,fromLink,code){
             try{
                 ShareCode.applyConfig(cfg);
                 closeModal();
                 try{history.replaceState(null,'',shareBaseUrl())}catch(e){}
-                generateQuestions();
-                pageToast((fromLink?'✅ 已按分享码出题：':'✅ 已按 '+ShareState.code6Last+' 出题：')+cfg.desc);
+                generateQuestions(code?('s6|'+code):null);
+                pageToast((fromLink?'✅ 已按分享码出题：':'✅ 已按 '+(code||ShareState.code6Last||'分享码')+' 出题：')+cfg.desc+'（同码同题）');
             }catch(e){
                 showRichModal('❌ 导入失败','<div style="text-align:left;font-size:14px;line-height:1.8">'+escapeHtml(e&&e.message?e.message:String(e))+'</div>','关闭');
             }
@@ -1475,11 +1646,11 @@
             var el=document.getElementById('code6Input');
             var v=el?String(el.value||'').replace(/\D/g,'').slice(0,6):'';
             if(v.length!==6){shareToast('请输入完整的 6 位数字',false,'shareImpToast');return}
-            var cfg=null;
-            try{cfg=ShareCode6.decode(v)}
+            var res=null;
+            try{res=UniCode.decode(v)}
             catch(e){shareToast(e&&e.message?e.message:'分享码无法识别',false,'shareImpToast');return}
             ShareState.code6Last=v;
-            applyCode6(cfg,false);
+            applyUni(res,false,v);
         }
 
         function shareImport(){
@@ -1503,10 +1674,19 @@
             var hash='';
             try{hash=location.hash||''}catch(e){}
             if(!hash)return;
+            /* V2.9.0 扫码填码入口：打开即弹出填写框并定位输入框 */
+            if(/join=1/.test(hash)){
+                try{history.replaceState(null,'',shareBaseUrl())}catch(e){}
+                setTimeout(function(){
+                    try{showShareCode();shareSwitch('imp');pageToast('📥 微信扫码成功，请输入老师公布的 6 位码')}
+                    catch(e){console.warn('扫码填码入口打开失败',e)}
+                },80);
+                return;
+            }
             var mr=hash.match(/race=(\d{6})/);
             if(mr){
                 var rc=mr[1],rr=null;
-                try{rr=RaceCode.decode(rc)}
+                try{rr=UniCode.decode(rc)}
                 catch(e){showModal('⚠️ 竞赛码无效',(e&&e.message)||'这个竞赛码无法识别');return}
                 showModal('🏆 收到竞赛码',rc+'\n\n'+rr.cfg.desc+'\n限时：'+fmtLimit(rr.limitSec)+'\n\n要开始竞赛吗？开赛后设置会锁住并立即计时。',true,function(){
                     raceStart({code:rc,cfg:rr.cfg,limitSec:rr.limitSec});
@@ -1518,11 +1698,11 @@
             var code=m[1];
             try{code=decodeURIComponent(code)}catch(e){}
             if(/^\d{6}$/.test(code)){
-                var cfg=null;
-                try{cfg=ShareCode6.decode(code)}
+                var res=null;
+                try{res=UniCode.decode(code)}
                 catch(e){showModal('⚠️ 分享码无效',(e&&e.message)||'这 6 位码无法识别');return}
                 ShareState.code6Last=code;
-                showModal('🔗 收到 6 位分享码',code+'\n\n'+cfg.desc+'\n\n导入会覆盖当前设置，并按同样规则重新出题。是否导入？',true,function(){applyCode6(cfg,true)});
+                applyUni(res,true,code);
                 return;
             }
             ShareCode.decode(code).then(function(p){
@@ -1536,69 +1716,99 @@
 
         function showShareCode(){
             ShareState.tab='gen';
-            var html=''
-                +'<style>'
-                +'.s6-row{display:flex;gap:9px;justify-content:center;margin:10px 0 8px}'
-                +'.s6-digit{width:46px;height:60px;display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:700;color:#1b5e20;background:#f2f9f3;border:1.5px solid #cfe4d3;border-radius:11px;font-family:ui-monospace,Consolas,Menlo,monospace;box-shadow:0 1px 0 #e6f2e8}'
-                +'.s6-desc{text-align:center;font-size:13px;color:#2e7d32;font-weight:600;margin:2px 0 10px;line-height:1.5}'
-                +'.s6-note{text-align:center;font-size:11.5px;color:#a15c00;line-height:1.7;margin-top:8px}'
-                +'.s6-input{width:100%;box-sizing:border-box;text-align:center;font-size:27px;letter-spacing:11px;text-indent:11px;font-family:ui-monospace,Consolas,Menlo,monospace;padding:13px 0;border:1.6px solid #cfe4d3;border-radius:12px;background:#fbfdfb;color:#1b5e20;outline:none}'
-                +'.s6-input:focus{border-color:#66BB6A;box-shadow:0 0 0 3px rgba(102,187,106,.16)}'
-                +'.s6-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:#9aa8a0;font-size:12px}'
-                +'.s6-sep:before,.s6-sep:after{content:"";flex:1;height:1px;background:#e6efe8}'
-                +'</style>'
-                +'<div style="text-align:left;min-width:min(340px,74vw)">'
-                +'  <div style="display:flex;gap:8px;margin-bottom:14px">'
-                +'    <button type="button" id="shareTabGen" class="btn" style="padding:8px 14px;font-size:13px" onclick="shareSwitch(\'gen\')">📤 分享</button>'
-                +'    <button type="button" id="shareTabImp" class="btn btn-secondary" style="padding:8px 14px;font-size:13px" onclick="shareSwitch(\'imp\')">📥 导入</button>'
-                +'  </div>'
-                +'  <div id="sharePaneGen">'
-                +'    <div style="font-size:12.5px;color:#4b5d51;line-height:1.75;background:#f2f9f3;border:1px solid #d6ecda;border-radius:10px;padding:10px 12px;margin-bottom:14px">'
-                +'      <b>6 位数字码</b>：对方输入这 6 位，就按<b>同样的题型、范围、难度、题量</b>出题。不联网、不加好友，念出来也记得住。'
-                +'    </div>'
-                +'    <div style="text-align:center;margin-bottom:12px"><button type="button" id="s6GenBtn" class="btn" style="padding:10px 24px" onclick="shareGenerate6()">🎲 生成 6 位数字码</button></div>'
-                +'    <div id="s6Wrap" style="display:none">'
-                +'      <div id="s6Boxes" class="s6-row"></div>'
-                +'      <div id="s6Desc" class="s6-desc"></div>'
-                +'      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
-                +'        <button type="button" class="btn" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy6()">📋 复制 6 位码</button>'
-                +'        <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy6Link()">🔗 复制链接</button>'
-                +'        <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareShowQR(\'six\')">📱 二维码</button>'
-                +'      </div>'
-                +'      <div id="s6Note" class="s6-note"></div>'
-                +'      <div id="shareQRBox" style="display:none;text-align:center;margin-top:14px"></div>'
-                +'    </div>'
-                +'    <div id="shareToast" style="text-align:center;font-size:12px;margin-top:10px;min-height:16px"></div>'
-                +'    <div class="s6-sep">要发<b>一模一样的卷子</b>？</div>'
-                +'    <div style="text-align:center"><button type="button" id="shareLongBtn" class="btn btn-secondary" style="padding:8px 16px;font-size:12.5px" onclick="shareShowLong()">📦 生成完整分享码（含题目）</button></div>'
-                +'    <div id="shareLongWrap" style="display:none;margin-top:14px;padding-top:14px;border-top:1px dashed #e2ece5">'
-                +'      <div style="font-size:11.5px;color:#7a8a7f;line-height:1.7;margin-bottom:10px">完整码把题目和答案一起带走，对方拿到的是同一份卷子（约 300～1000 字符，适合复制粘贴或扫二维码）。</div>'
-                +'      <label style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:#2f3d35;margin-bottom:10px;cursor:pointer">'
-                +'        <input type="checkbox" id="shareWithQ" checked onchange="shareToggleWithQ(this)" style="margin-top:3px">'
-                +'        <span><b>包含题目</b><br><span style="color:#8a978d;font-size:11.5px">不勾选则只带设置（等价于 6 位码，但没有 6 位码简单）</span></span>'
-                +'      </label>'
-                +'      <div style="text-align:center;margin-bottom:10px"><button type="button" id="shareGenBtn" class="btn" style="padding:9px 20px;font-size:12.5px" onclick="shareGenerate()">📦 生成完整分享码</button></div>'
-                +'      <div id="shareResult" style="display:none">'
-                +'        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;color:#7a8a7f;margin-bottom:6px"><span>完整码（<span id="shareLen">0</span> 字符）</span><span id="shareSummary" style="color:#2e7d32"></span></div>'
-                +'        <textarea id="shareCodeBox" readonly rows="4" onclick="this.select()" style="width:100%;box-sizing:border-box;font-family:ui-monospace,Consolas,Menlo,monospace;font-size:11.5px;line-height:1.5;padding:9px;border:1.5px solid #cfe4d3;border-radius:10px;background:#fbfdfb;resize:vertical;word-break:break-all;color:#33413a"></textarea>'
-                +'        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center">'
-                +'          <button type="button" class="btn" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy(\'code\')">📋 复制完整码</button>'
-                +'          <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy(\'link\')">🔗 复制链接</button>'
-                +'        </div>'
-                +'      </div>'
-                +'    </div>'
-                +'  </div>'
-                +'  <div id="sharePaneImp" style="display:none">'
-                +'    <div style="font-size:12.5px;color:#6b5a2f;line-height:1.75;background:#fff8e8;border:1px solid #f2e2bd;border-radius:10px;padding:10px 12px;margin-bottom:12px">输入对方给你的 <b>6 位数字</b>，立即按同样规则出题。导入会覆盖当前设置。</div>'
-                +'    <input id="code6Input" class="s6-input" inputmode="numeric" autocomplete="off" placeholder="000000" oninput="share6Input(this)" onkeydown="if(event.key===\'Enter\')shareImport6()">'
-                +'    <div style="text-align:center;margin-top:12px"><button type="button" id="share6Btn" class="btn" style="padding:10px 26px" onclick="shareImport6()">📥 用这 6 位出题</button></div>'
-                +'    <div id="shareImpToast" style="text-align:center;font-size:12px;margin-top:10px;min-height:16px"></div>'
-                +'    <div class="s6-sep">收到的是完整分享码 / 链接？</div>'
-                +'    <textarea id="shareInput" rows="3" placeholder="粘贴 ZXM1D-… 开头的完整分享码，或整条链接" style="width:100%;box-sizing:border-box;font-family:ui-monospace,Consolas,Menlo,monospace;font-size:11.5px;line-height:1.5;padding:9px;border:1.5px solid #e6d9b8;border-radius:10px;background:#fffdf7;resize:vertical;word-break:break-all;color:#33413a"></textarea>'
-                +'    <div style="text-align:center;margin-top:10px"><button type="button" class="btn btn-secondary" style="padding:8px 18px;font-size:12.5px" onclick="shareImport()">📥 导入完整码</button></div>'
-                +'  </div>'
-                +'</div>';
+            var css=`<style>
+.sh-mode{display:flex;gap:8px;margin-top:8px}
+.sh-mode-card{flex:1;min-width:0;border:1.8px solid #e3ede6;border-radius:12px;padding:10px 11px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s;text-align:left}
+.sh-mode-card.on{border-color:#66BB6A;background:#f4fbf5}
+.sh-mode-t{font-size:13px;font-weight:700;color:#4b5d51;line-height:1.4;white-space:nowrap}
+.sh-mode-card.on .sh-mode-t{color:#1b5e20}
+.sh-mode-d{font-size:10.5px;color:#8a978d;line-height:1.45;margin-top:3px}
+.sh-limit{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.sh-limit button{border:1.4px solid #dfeae2;background:#fff;color:#4b5d51;font-size:11.5px;padding:6px 10px;border-radius:15px;cursor:pointer;font-family:inherit}
+.sh-limit button.on{background:#2e7d32;border-color:#2e7d32;color:#fff;font-weight:700}
+.s6-row{display:flex;gap:9px;justify-content:center;margin:12px 0 8px}
+.s6-digit{width:46px;height:60px;display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:700;color:#1b5e20;background:#f2f9f3;border:1.5px solid #cfe4d3;border-radius:11px;font-family:ui-monospace,Consolas,Menlo,monospace;box-shadow:0 1px 0 #e6f2e8}
+.s6-desc{text-align:center;font-size:12.5px;color:#2e7d32;font-weight:600;margin:2px 0 10px;line-height:1.55}
+.s6-note{text-align:center;font-size:11.5px;color:#8a978d;line-height:1.7;margin-top:8px}
+.s6-input{width:100%;box-sizing:border-box;text-align:center;font-size:27px;letter-spacing:11px;text-indent:11px;font-family:ui-monospace,Consolas,Menlo,monospace;padding:13px 0;border:1.6px solid #cfe4d3;border-radius:12px;background:#fbfdfb;color:#1b5e20;outline:none}
+.s6-input:focus{border-color:#66BB6A;box-shadow:0 0 0 3px rgba(102,187,106,.16)}
+.s6-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:#9aa8a0;font-size:11.5px}
+.s6-sep:before,.s6-sep:after{content:"";flex:1;height:1px;background:#e6efe8}
+</style>`;
+            var html=css
++'<div style="text-align:left;min-width:min(340px,78vw)">'
++'  <div style="display:flex;gap:8px;margin-bottom:14px">'
++'    <button type="button" id="shareTabGen" class="btn" style="padding:8px 14px;font-size:13px" onclick="shareSwitch(\'gen\')">📤 我要发码</button>'
++'    <button type="button" id="shareTabImp" class="btn btn-secondary" style="padding:8px 14px;font-size:13px" onclick="shareSwitch(\'imp\')">📥 我来答题</button>'
++'  </div>'
++'  <div id="sharePaneGen">'
++'    <div style="font-size:12.5px;color:#4b5d51;line-height:1.65">选一种玩法，生成 <b>6 位码</b>发给对方，对方输码即得到<b>同一套题</b>。</div>'
++'    <div class="sh-mode">'
++'      <div class="sh-mode-card on" id="shModeStd" onclick="shareSetMode(\'std\')">'
++'        <div class="sh-mode-t">📝 标准练习</div>'
++'        <div class="sh-mode-d">同题练习、做完对答案</div>'
++'      </div>'
++'      <div class="sh-mode-card" id="shModeRace" onclick="shareSetMode(\'race\')">'
++'        <div class="sh-mode-t">🏆 竞赛模式</div>'
++'        <div class="sh-mode-d">全班同题、限时收卷</div>'
++'      </div>'
++'    </div>'
++'    <div id="shLimitWrap" style="display:none">'
++'      <div style="font-size:11.5px;color:#8a978d;margin-top:10px">⏱ 限时（时间到自动交卷）</div>'
++'      <div class="sh-limit" id="shLimitChips"></div>'
++'    </div>'
++'    <div style="text-align:center;margin:16px 0 2px"><button type="button" id="s6GenBtn" class="btn" style="padding:10px 26px" onclick="shareGenerate6()">🎲 生成分享码</button></div>'
++'    <div id="s6Wrap" style="display:none">'
++'      <div id="s6Boxes" class="s6-row"></div>'
++'      <div id="s6Desc" class="s6-desc"></div>'
++'      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
++'        <button type="button" class="btn" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy6()">📋 复制码</button>'
++'        <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy6Link()">🔗 复制链接</button>'
++'        <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareShowQR(\'six\')">📱 二维码</button>'
++'      </div>'
++'      <div id="s6Note" class="s6-note"></div>'
++'      <div id="shareQRBox" style="display:none;text-align:center;margin-top:14px"></div>'
++'    </div>'
++'    <div id="shareToast" style="text-align:center;font-size:12px;margin-top:10px;min-height:16px"></div>'
++'    <div id="shareLongSec">'
++'      <div class="s6-sep">要打印、或离线对答案？</div>'
++'      <div style="text-align:center"><button type="button" id="shareLongBtn" class="btn btn-secondary" style="padding:8px 16px;font-size:12.5px" onclick="shareShowLong()">📦 生成完整码（含题目）</button></div>'
++'      <div id="shareLongWrap" style="display:none;margin-top:14px;padding-top:14px;border-top:1px dashed #e2ece5">'
++'        <div style="font-size:11.5px;color:#7a8a7f;line-height:1.7;margin-bottom:10px">完整码把题目和答案一起带走，适合打印或对方网络不便（约 300～1000 字符）。</div>'
++'        <label style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:#2f3d35;margin-bottom:10px;cursor:pointer">'
++'          <input type="checkbox" id="shareWithQ" checked onchange="shareToggleWithQ(this)" style="margin-top:3px">'
++'          <span><b>包含题目</b><br><span style="color:#8a978d;font-size:11.5px">不勾选则只带设置</span></span>'
++'        </label>'
++'        <div style="text-align:center;margin-bottom:10px"><button type="button" id="shareGenBtn" class="btn" style="padding:9px 20px;font-size:12.5px" onclick="shareGenerate()">📦 生成完整码</button></div>'
++'        <div id="shareResult" style="display:none">'
++'          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;color:#7a8a7f;margin-bottom:6px"><span>完整码（<span id="shareLen">0</span> 字符）</span><span id="shareSummary" style="color:#2e7d32"></span></div>'
++'          <textarea id="shareCodeBox" readonly rows="4" onclick="this.select()" style="width:100%;box-sizing:border-box;font-family:ui-monospace,Consolas,Menlo,monospace;font-size:11.5px;line-height:1.5;padding:9px;border:1.5px solid #cfe4d3;border-radius:10px;background:#fbfdfb;resize:vertical;word-break:break-all;color:#33413a"></textarea>'
++'          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center">'
++'            <button type="button" class="btn" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy(\'code\')">📋 复制完整码</button>'
++'            <button type="button" class="btn btn-secondary" style="padding:8px 14px;font-size:12.5px" onclick="shareCopy(\'link\')">🔗 复制链接</button>'
++'          </div>'
++'        </div>'
++'      </div>'
++'    </div>'
++'  </div>'
++'  <div id="sharePaneImp" style="display:none">'
++'    <div style="font-size:12.5px;color:#6b5a2f;line-height:1.7;background:#fff8e8;border:1px solid #f2e2bd;border-radius:10px;padding:10px 12px;margin-bottom:12px">输入对方给的 <b>6 位数字</b>。标准码直接出题；竞赛码会先确认，再开始计时。</div>'
++'    <input id="code6Input" class="s6-input" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="000000" oninput="share6Input(this)" onkeydown="if(event.key===\'Enter\')shareImport6()">'
++'    <div style="text-align:center;margin-top:12px"><button type="button" id="share6Btn" class="btn" style="padding:10px 28px" onclick="shareImport6()">开始</button></div>'
++'    <div id="shareImpToast" style="text-align:center;font-size:12px;margin-top:10px;min-height:16px"></div>'
++'    <div class="s6-sep">或扫码打开填写框</div>'
++'    <div style="font-size:11.5px;color:#7a8a7f;line-height:1.65;text-align:center;margin-bottom:8px">把这个二维码发到群里或投屏，同学微信扫码即可打开在线版并弹出本填写框，再输入老师公布的 6 位码。</div>'
++'    <div style="text-align:center"><button type="button" class="btn btn-secondary" style="padding:8px 16px;font-size:12.5px" onclick="shareShowJoinQR()">📱 生成扫码填码二维码</button></div>'
++'    <div id="shareJoinQRBox" style="display:none;text-align:center;margin-top:12px"></div>'
++'    <div class="s6-sep">收到的是链接或完整码？</div>'
++'    <textarea id="shareInput" rows="3" placeholder="粘贴 ZXM1D-… 开头的完整分享码，或整条链接" style="width:100%;box-sizing:border-box;font-family:ui-monospace,Consolas,Menlo,monospace;font-size:11.5px;line-height:1.5;padding:9px;border:1.5px solid #e6d9b8;border-radius:10px;background:#fffdf7;resize:vertical;word-break:break-all;color:#33413a"></textarea>'
++'    <div style="text-align:center;margin-top:10px"><button type="button" class="btn btn-secondary" style="padding:8px 18px;font-size:12.5px" onclick="shareImport()">📥 导入</button></div>'
++'  </div>'
++'</div>';
             showRichModal('🔗 分享码',html,'关闭');
+            if(ShareState.mode==='race'){
+                shareSetMode('race');
+            }
         }
         // ================== 分享码结束 ==================
 
@@ -1639,6 +1849,38 @@
                 return {code:s,cfg:cfg,limitSec:LIMITS[li],limitIndex:li};
             }
             return {encode:encode,decode:decode,limitIndex:limitIndex,limits:LIMITS,capacity:cap};
+        })();
+
+        /* ==========================================================
+           统一分享码：标准练习 + 竞赛（8 档限时）共 9 个槽位，仍压进 6 位数字
+           slot 0 = 标准练习；slot 1..8 = 竞赛，对应 RACE_LIMITS[0..7]
+           容量：92760 × 9 = 834840 < 900000，装得下
+           ========================================================== */
+        const UniCode=(function(){
+            var SLOTS=1+RACE_LIMITS.length;
+            var K=7919,M=900000,KINV=517679,CODE_MIN=100000,_cap=0;
+            function cap(){if(!_cap)_cap=ShareCode6.capacity()*SLOTS;return _cap}
+            function encode(cfg,mode,limitSec){
+                var r=ShareCode6.encode(cfg);
+                var sl=(mode==='race')?(1+RaceCode.limitIndex(limitSec)):0;
+                var full=r.data*SLOTS+sl;
+                if(full>=cap())throw new Error('当前设置无法用 6 位码表示，请改用完整分享码');
+                var num=CODE_MIN+((full*K)%M);
+                return {code:String(num),cfg:r.cfg,notes:r.notes||[],
+                        mode:sl?'race':'std',limitSec:sl?RACE_LIMITS[sl-1]:0,slot:sl,data:full};
+            }
+            function decode(str){
+                var t=String(str==null?'':str).replace(/\D/g,'');
+                if(t.length!==6)throw new Error('分享码应为 6 个数字，当前是 '+t.length+' 位');
+                var num=parseInt(t,10);
+                if(!(num>=CODE_MIN&&num<CODE_MIN+M))throw new Error('这个号码不存在，请向对方确认分享码');
+                var full=((num-CODE_MIN)*KINV)%M;
+                if(full>=cap())throw new Error('这个号码不存在：可能输错或漏了一位，请向对方核对');
+                var sl=full%SLOTS,base=Math.floor(full/SLOTS);
+                var cfg=ShareCode6.fromData(base);
+                return {code:t,cfg:cfg,mode:sl?'race':'std',limitSec:sl?RACE_LIMITS[sl-1]:0,slot:sl};
+            }
+            return {encode:encode,decode:decode,slotCount:function(){return SLOTS},capacity:cap};
         })();
 
         /* 成绩码：学生端生成，老师端可校验；紧凑一行，便于以后批量汇总 */
@@ -1988,7 +2230,7 @@
                 var rb=document.getElementById('raceResultBox');if(rb){rb.style.display='none';rb.innerHTML=''}
                 closeModal();
                 try{history.replaceState(null,'',shareBaseUrl())}catch(e){}
-                if(o.paper&&o.paper.length){renderSharedPaper(o.paper)}else{generateQuestions()}
+                if(o.paper&&o.paper.length){renderSharedPaper(o.paper)}else{generateQuestions(RACE.code?('race|'+RACE.code):null)}
                 if(!appState.questions||!appState.questions.length)throw new Error('题目没有生成成功，请让老师确认竞赛设置');
                 RACE.startedAt=Date.now();
                 startRaceClock();
@@ -2145,7 +2387,7 @@
 
         /* ---------- 老师端：竞赛中心 ---------- */
         function showRaceCenter(tab){
-            RaceUI.tab=tab||'gen';RaceUI.code='';RaceUI.link='';RaceUI.longCode='';
+            RaceUI.tab=(tab==='gen'||tab==='join'||tab==='board')?tab:'score';RaceUI.code='';RaceUI.link='';RaceUI.longCode='';
             var html=''
                 +'<style>'
                 +'.s6-row{display:flex;gap:9px;justify-content:center;margin:10px 0 8px}'
@@ -2176,15 +2418,14 @@
                 +'</style>'
                 +'<div style="text-align:left;min-width:min(360px,76vw)">'
                 +'  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px">'
-                +'    <button type="button" id="raceTabGen" class="btn" style="padding:9px 6px;font-size:12.5px" onclick="raceSwitchTab(\'gen\')">📤 出竞赛码</button>'
-                +'    <button type="button" id="raceTabJoin" class="btn btn-secondary" style="padding:9px 6px;font-size:12.5px" onclick="raceSwitchTab(\'join\')">🎒 学生参赛</button>'
-                +'    <button type="button" id="raceTabScore" class="btn btn-secondary" style="padding:9px 6px;font-size:12.5px" onclick="raceSwitchTab(\'score\')">📋 看成绩</button>'
+                +'    <button type="button" id="raceTabScore" class="btn" style="padding:9px 6px;font-size:12.5px" onclick="raceSwitchTab(\'score\')">📋 看成绩</button>'
                 +'    <button type="button" id="raceTabBoard" class="btn btn-secondary" style="padding:9px 6px;font-size:12.5px" onclick="raceSwitchTab(\'board\')">📊 汇总排行</button>'
                 +'  </div>'
+                +'  <div style="font-size:11.5px;color:#8a978d;line-height:1.7;margin:-6px 0 12px">发竞赛码在「🔗 分享码」里选<b>竞赛模式</b>；这里只负责收成绩、看排行。</div>'
                 /* --- 出竞赛码 --- */
                 +'  <div id="racePaneGen">'
                 +'    <div style="font-size:12.5px;color:#5d4b4b;line-height:1.8;background:#fff5f5;border:1px solid #f3d6d6;border-radius:10px;padding:10px 12px;margin-bottom:14px">'
-                +'      <b>老师出题 → 发 6 位竞赛码 → 学生输入即开赛</b><br>竞赛码只含<b>题型、范围、难度、题量、限时</b>，学生端按同样规则出题并计时；成绩单会带回这个竞赛码。'
+                +'      <b>老师出题 → 发 6 位竞赛码 → 学生输入即开赛</b><br>竞赛码含<b>题型、范围、难度、题量、限时</b>，<b>全班出同一套题</b>（每道题、顺序都相同）并各自计时；成绩单会带回这个竞赛码。'
                 +'    </div>'
                 +'    <div style="font-size:12px;color:#4b5d51;margin-bottom:6px">⏱ 限时设置</div>'
                 +'    <div id="raceLimitChips"></div>'
@@ -2251,7 +2492,7 @@
                 +'    <div id="raceBoardOut"></div>'
                 +'  </div>'
                 +'</div>';
-            showRichModal('🏆 竞赛模式',html,'关闭');
+            showRichModal('📊 成绩与排行',html,'关闭');
             raceSwitchTab(RaceUI.tab);
         }
 
@@ -2269,7 +2510,7 @@
             var panes={gen:'racePaneGen',join:'racePaneJoin',score:'racePaneScore',board:'racePaneBoard'};
             Object.keys(panes).forEach(function(k){var p=document.getElementById(panes[k]);if(p)p.style.display=(k===tab?'block':'none')});
             var tabs={gen:'raceTabGen',join:'raceTabJoin',score:'raceTabScore',board:'raceTabBoard'};
-            Object.keys(tabs).forEach(function(k){var b=document.getElementById(tabs[k]);if(b)b.className=(k===tab)?'btn':'btn btn-secondary'});
+            Object.keys(tabs).forEach(function(k){setShareTabLook(document.getElementById(tabs[k]),k===tab)});
             if(tab==='gen'){renderRaceLimitChips();if(RaceUI.code)renderRaceCodeRow()}
             if(tab==='board')renderBoardPane();
             if(tab==='join'){
@@ -2308,16 +2549,16 @@
 
         function raceGenCode(){
             var res=null;
-            try{res=RaceCode.encode(currentShareCfg(),RACE_LIMITS[RaceUI.limitIdx])}
+            try{res=UniCode.encode(currentShareCfg(),'race',RACE_LIMITS[RaceUI.limitIdx])}
             catch(e){rcToast(e&&e.message?e.message:'当前设置无法生成竞赛码',false);return}
             RaceUI.code=res.code;
-            RaceUI.link=shareBaseUrl()+'#race='+res.code;
+            RaceUI.link=shareBaseUrl()+'#code='+res.code;
             renderRaceCodeRow();
             var w=document.getElementById('raceCodeWrap');if(w)w.style.display='block';
             var d=document.getElementById('raceCodeDesc');if(d)d.textContent=res.cfg.desc+' · '+fmtLimit(res.limitSec);
             var n=document.getElementById('raceCodeNote');
-            if(n)n.innerHTML=res.notes.length?('· '+res.notes.join('<br>· ')):'';
-            rcToast('已生成，把 6 位数字发给学生即可',true);
+            if(n)n.innerHTML='· 全班同一竞赛码 = 同一套题（含顺序），成绩可直接比较<br>· 请让全班用同一版本页面：V2.7.3 起同码同题，旧版仍会各自随机'+(res.notes.length?('<br>· '+res.notes.join('<br>· ')):'');
+            rcToast('已生成，全班同一套题；把 6 位数字发给学生即可',true);
         }
 
         function raceCopyCode(){
@@ -2338,7 +2579,7 @@
         function raceShowQR(){
             var box=document.getElementById('raceQRBox');
             if(!box)return;
-            var link=RaceUI.link||'';
+            var link=RaceUI.code?shareQRLink(RaceUI.code):(RaceUI.link||'');
             if(!link){rcToast('请先点「生成 6 位竞赛码」',false);return}
             box.style.display='block';
             box.innerHTML='<span style="font-size:12px;color:#7a8a7f">二维码生成中…</span>';
@@ -2351,7 +2592,7 @@
                     new QRCode(holder,{text:link,width:226,height:226,colorDark:'#b71c1c',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L});
                     var tip=document.createElement('div');
                     tip.style.cssText='font-size:11px;color:#8a978d;margin-top:8px';
-                    tip.textContent='学生扫码即可直接参赛';
+                    tip.textContent='微信扫一扫 → 打开在线出题机 → 自动弹出竞赛确认框';
                     box.appendChild(tip);
                 }catch(e){box.innerHTML='<span style="font-size:12px;color:#c62828">二维码生成失败，请改用「复制链接」</span>'}
             }).catch(function(){
@@ -2386,7 +2627,7 @@
             var v=el?String(el.value||'').replace(/\D/g,'').slice(0,6):'';
             if(v.length!==6){rcToast('请输入完整的 6 位竞赛码',false,'raceJoinToast');return}
             var r=null;
-            try{r=RaceCode.decode(v)}
+            try{r=UniCode.decode(v)}
             catch(e){rcToast(e&&e.message?e.message:'竞赛码无法识别',false,'raceJoinToast');return}
             var nm=document.getElementById('raceJoinName');
             var name=nm?String(nm.value||'').trim():'';
@@ -2697,7 +2938,7 @@
         }
         
         
-        function generateQuestions(){if(!OperationLock.acquire('generate',5000))return;try{if(!validateGenerateParams()){OperationLock.release('generate');return}const isCustomMode=appState.currentTab==='custom';let types=isCustomMode?appState.selectedCustomTypes:mapOutlineToTypes(appState.outlineTypes);if(types.length===0)types=['mixed'];const count=appState.questionCount;const range=appState.numberRange;const newQuestions=[];const seenDisplays=new Set();for(let i=0;i<count;i++){let question,valid=false,attempts=0,maxAttempts=300;while(!valid&&attempts<maxAttempts){attempts++;const type=types[Math.floor(Math.random()*types.length)];question=generateSingleQuestion(type,range,appState.difficulty,appState.allowNegative);valid=validateQuestion(question,range,appState.allowNegative);if(valid&&seenDisplays.has(question.display)){valid=false;if(attempts>80)valid=true}if(valid)seenDisplays.add(question.display)}if(!valid){showModal('出题失败',`无法生成符合要求的题目（第${i+1}题）。\n建议：\n1. 增大数值范围\n2. 选择更简单的题型\n3. 关闭负数模式`);OperationLock.release('generate');return}newQuestions.push(question)}appState.questions=newQuestions;appState.answers={};appState.currentQuestionIndex=0;appState.isSubmitted=false;appState.hasScrolledToResult=false;document.getElementById('questionCard').style.display='block';document.getElementById('actionButtonsPanel').style.display='block';document.getElementById('resultPanel').style.display='block';document.getElementById('resultPanel').classList.add('visible');document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('studentInfoCard').style.display='block';const printHeader=document.getElementById('printHeader');if(printHeader){printHeader.style.display='block';printHeader.classList.add('visible')}updatePrintHeader();updateMetaRow();renderQuestions();startTimer();if(appState.questionMode==='single'){document.getElementById('singleNavigation').style.display='flex'}else{document.getElementById('singleNavigation').style.display='none'}document.getElementById('questionCard').scrollIntoView({behavior:'smooth',block:'start'})}catch(error){console.error('Generate questions error:',error);showModal('❌ 出题异常','生成题目时发生错误：'+error.message)}finally{OperationLock.release('generate')}}
+        function generateQuestions(seed){if(!OperationLock.acquire('generate',5000))return;try{__rng=seed?mulberry32(makeSeed(String(seed))):null;if(!validateGenerateParams()){OperationLock.release('generate');return}const isCustomMode=appState.currentTab==='custom';let types=isCustomMode?appState.selectedCustomTypes:mapOutlineToTypes(appState.outlineTypes);if(types.length===0)types=['mixed'];const count=appState.questionCount;const range=appState.numberRange;const newQuestions=[];const seenDisplays=new Set();for(let i=0;i<count;i++){let question,valid=false,attempts=0,maxAttempts=300;while(!valid&&attempts<maxAttempts){attempts++;const type=types[Math.floor(rnd()*types.length)];question=generateSingleQuestion(type,range,appState.difficulty,appState.allowNegative);valid=validateQuestion(question,range,appState.allowNegative);if(valid&&seenDisplays.has(question.display)){valid=false;if(attempts>80)valid=true}if(valid)seenDisplays.add(question.display)}if(!valid){showModal('出题失败',`无法生成符合要求的题目（第${i+1}题）。\n建议：\n1. 增大数值范围\n2. 选择更简单的题型\n3. 关闭负数模式`);OperationLock.release('generate');return}newQuestions.push(question)}appState.questions=newQuestions;appState.answers={};appState.currentQuestionIndex=0;appState.isSubmitted=false;appState.hasScrolledToResult=false;document.getElementById('questionCard').style.display='block';document.getElementById('actionButtonsPanel').style.display='block';document.getElementById('resultPanel').style.display='block';document.getElementById('resultPanel').classList.add('visible');document.getElementById('scoreDisplay').style.display='none';document.getElementById('scorePlaceholder').style.display='block';document.getElementById('timerStats').style.display='none';document.getElementById('studentInfoCard').style.display='block';const printHeader=document.getElementById('printHeader');if(printHeader){printHeader.style.display='block';printHeader.classList.add('visible')}updatePrintHeader();updateMetaRow();renderQuestions();startTimer();if(appState.questionMode==='single'){document.getElementById('singleNavigation').style.display='flex'}else{document.getElementById('singleNavigation').style.display='none'}document.getElementById('questionCard').scrollIntoView({behavior:'smooth',block:'start'})}catch(error){console.error('Generate questions error:',error);showModal('❌ 出题异常','生成题目时发生错误：'+error.message)}finally{__rng=null;OperationLock.release('generate')}}
 
         function validateGenerateParams(){const isCustomMode=appState.currentTab==='custom';const selectedTypes=isCustomMode?appState.selectedCustomTypes:appState.outlineTypes;if(!isCustomMode){if(!Array.isArray(selectedTypes)||selectedTypes.length===0){showModal('提示','请至少选择一种大纲题型！');return false}const safeTypes=selectedTypes.filter(t=>typeof t==='string'&&t.length<100&&t!=='__proto__'&&t!=='constructor');if(safeTypes.length!==selectedTypes.length){console.warn('[安全警告] 大纲题型包含可疑值，已清理');appState.outlineTypes=safeTypes}if(safeTypes.length===0){showModal('提示','请至少选择一种大纲题型！');return false}}else{const validTypeValues=['add','sub','multi','div','multiply','divide','mixed','mixed-2','mixed-3','bracket','fill','complex','four-mixed','carry','borrow','remainder','vertical','step','fraction-add','fraction-sub','fraction-mul','fraction-div'];const typeValidation=InputValidator.array(selectedTypes,validTypeValues,false);if(!typeValidation.valid||typeValidation.value.length===0){showModal('提示','请至少选择一种自定义题型！');return false}appState.selectedCustomTypes=typeValidation.value}const rangeCheck=InputValidator.number(appState.numberRange,{min:1,max:10000,fieldName:'数值范围'});if(!rangeCheck.valid)appState.numberRange=rangeCheck.value;if(selectedTypes.includes('remainder')&&appState.numberRange<10){showModal('⚠️ 范围过小','带余数的除法需要更大的数值范围（建议≥10），已自动调整为10');appState.numberRange=10;document.getElementById('numberRangeInput').value=10}const countCheck=InputValidator.number(appState.questionCount,{min:1,max:100,fieldName:'题目数量'});if(!countCheck.valid){appState.questionCount=countCheck.value;document.getElementById('questionCountInput').value=countCheck.value}if(appState.questionCount<1){showModal('提示','题目数量不能为0，请至少选择1道题！');return false}return true}
 
@@ -2712,12 +2953,18 @@
         const createFractionHTML=(num,den)=>`<div class="fraction"><div class="fraction-num">${num}</div><div class="fraction-line"></div><div class="fraction-den">${den}</div></div>`;
 
         
+        /* ---------- 可播种随机源：同一分享码 / 竞赛码 → 同一套题 ---------- */
+        var __rng=null;
+        function makeSeed(str){var h=2166136261;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h>>>0}
+        function mulberry32(a){a=a>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}}
+        function rnd(){return __rng?__rng():Math.random()}
+
         function generateSingleQuestion(type,range,difficulty,allowNegative){
             let num1,num2,num3,num4,answer,display,isFillBlank=false,fractionData=null;
             let maxNum=Math.max(1,Math.floor(range));
             const diffFactor=difficulty==='easy'?0.45:(difficulty==='hard'?1:0.7);
             if(difficulty!=='hard'&&maxNum>3){maxNum=Math.max(Math.min(5,maxNum),Math.floor(maxNum*diffFactor))}
-            const rand=(min,max)=>{min=Math.max(0,Math.floor(min));max=Math.max(min,Math.floor(max));return Math.floor(Math.random()*(max-min+1))+min};
+            const rand=(min,max)=>{min=Math.max(0,Math.floor(min));max=Math.max(min,Math.floor(max));return Math.floor(rnd()*(max-min+1))+min};
             const gcdp=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t}return a};
             const pf=(mx)=>{for(let i=0;i<200;i++){const d=rand(2,mx),n=rand(1,d-1);if(gcdp(n,d)===1)return[n,d]}return[1,2]};
             const pfSame=(d)=>{for(let i=0;i<200;i++){const n=rand(1,d-1);if(gcdp(n,d)===1)return[n,d]}return[1,d]};
@@ -2729,11 +2976,11 @@
                 case'multiply':{const sq=Math.floor(Math.sqrt(maxNum));if(allowNegative){num1=rand(2,Math.max(2,sq+2));num2=rand(2,Math.max(2,sq+2))}else if(sq>=2){num1=rand(2,sq);num2=rand(2,sq)}else{num1=rand(0,Math.max(1,sq));num2=rand(0,Math.max(1,sq))}answer=num1*num2;display=`${num1} × ${num2} = `;break;}
                 case'divide':{const dMax=Math.max(2,Math.min(9,maxNum));num2=rand(2,dMax);let qMax=Math.floor(maxNum/num2);if(qMax<1){num2=1;qMax=Math.floor(maxNum/num2)}answer=qMax<1?0:rand(1,qMax);num1=num2*answer;display=`${num1} ÷ ${num2} = `;break;}
                 case'four-mixed':{const pattern=rand(0,2);const sm=Math.max(2,Math.floor(Math.sqrt(maxNum)));if(pattern===0){num2=rand(2,sm);num3=rand(2,sm);num1=rand(1,Math.max(1,maxNum-num2*num3));answer=num1+num2*num3;display=`${num1} + ${num2} × ${num3} = `}else if(pattern===1){num1=rand(1,Math.max(1,Math.floor(maxNum/4)));num2=rand(1,Math.max(1,Math.floor(maxNum/4)));const sum12=num1+num2;num3=rand(2,Math.max(2,Math.floor(maxNum/sum12)));answer=sum12*num3;display=`(${num1} + ${num2}) × ${num3} = `}else{const sm2=Math.max(2,Math.floor(Math.sqrt(maxNum/2)));num1=rand(2,sm2);num2=rand(2,sm2);num3=rand(2,sm2);num4=rand(2,Math.max(1,Math.floor((maxNum-num1*num2)/num3)));answer=num1*num2+num3*num4;display=`${num1} × ${num2} + ${num3} × ${num4} = `}break;}
-                case'mixed':if(maxNum<=2){num1=Math.max(1,maxNum);num2=0;answer=num1;display=`${num1} + ${num2} = `}else if(Math.random()>0.5){num1=rand(1,maxNum-1);num2=rand(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}else{num1=rand(2,maxNum);num2=allowNegative?rand(1,maxNum):rand(1,num1-1);answer=num1-num2;display=`${num1} - ${num2} = `}break;
-                case'mixed-2':if(maxNum<=2){num1=Math.max(1,maxNum);num2=0;answer=num1;display=`${num1} + ${num2} = `}else if(Math.random()>0.5){num1=rand(1,maxNum-1);num2=rand(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}else{num1=rand(2,maxNum);num2=allowNegative?rand(1,maxNum):rand(1,num1-1);answer=num1-num2;display=`${num1} - ${num2} = `}break;
+                case'mixed':if(maxNum<=2){num1=Math.max(1,maxNum);num2=0;answer=num1;display=`${num1} + ${num2} = `}else if(rnd()>0.5){num1=rand(1,maxNum-1);num2=rand(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}else{num1=rand(2,maxNum);num2=allowNegative?rand(1,maxNum):rand(1,num1-1);answer=num1-num2;display=`${num1} - ${num2} = `}break;
+                case'mixed-2':if(maxNum<=2){num1=Math.max(1,maxNum);num2=0;answer=num1;display=`${num1} + ${num2} = `}else if(rnd()>0.5){num1=rand(1,maxNum-1);num2=rand(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}else{num1=rand(2,maxNum);num2=allowNegative?rand(1,maxNum):rand(1,num1-1);answer=num1-num2;display=`${num1} - ${num2} = `}break;
                 case'mixed-3':if(maxNum<=3){num1=Math.max(1,maxNum);answer=num1;display=`${num1} + 0 + 0 = `}else{const m3Type=rand(0,2);if(m3Type===0){num1=rand(2,maxNum-1);num2=rand(1,maxNum-num1);const sum3=num1+num2;num3=rand(1,Math.max(1,sum3-1));answer=sum3-num3;display=`${num1} + ${num2} - ${num3} = `}else if(m3Type===1){num1=rand(2,maxNum);num2=rand(1,num1-1);const diff3=num1-num2;num3=rand(1,Math.max(1,maxNum-diff3));answer=diff3+num3;display=`${num1} - ${num2} + ${num3} = `}else{num1=rand(3,maxNum);num2=rand(1,num1-2);const diff4=num1-num2;num3=rand(1,Math.max(1,diff4-1));answer=diff4-num3;display=`${num1} - ${num2} - ${num3} = `}}break;
-                case'bracket':{let success=false,attempts=0;const half=Math.max(1,Math.floor(maxNum/2));while(!success&&attempts<100){attempts++;num1=rand(1,half);num2=rand(1,half);num3=rand(1,half);const bracketType=Math.random();if(bracketType<0.33){const inner=num2-num3;answer=num1+inner;if(inner!==0&&Math.abs(inner)<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&(inner<0||answer<0))continue;display=`${num1} + (${num2} - ${num3}) = `;success=true}}else if(bracketType<0.66){const inner=num2+num3;answer=num1-inner;if(inner<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&answer<0)continue;display=`${num1} - (${num2} + ${num3}) = `;success=true}}else{const inner=num1+num2;answer=inner-num3;if(inner<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&answer<0)continue;display=`(${num1} + ${num2}) - ${num3} = `;success=true}}}if(!success){num1=half;num2=Math.max(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}break;}
-                case'fill':if(maxNum<=1){answer=1;display=`__ + 1 = 2`}else if(Math.random()>0.5){num2=rand(1,maxNum-1);const blank=rand(1,Math.max(1,maxNum-num2));answer=blank;display=`__ + ${num2} = ${blank+num2}`}else{num1=rand(2,maxNum);const blank=rand(1,num1-1);answer=blank;display=`${num1} - __ = ${num1-blank}`}isFillBlank=true;break;
+                case'bracket':{let success=false,attempts=0;const half=Math.max(1,Math.floor(maxNum/2));while(!success&&attempts<100){attempts++;num1=rand(1,half);num2=rand(1,half);num3=rand(1,half);const bracketType=rnd();if(bracketType<0.33){const inner=num2-num3;answer=num1+inner;if(inner!==0&&Math.abs(inner)<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&(inner<0||answer<0))continue;display=`${num1} + (${num2} - ${num3}) = `;success=true}}else if(bracketType<0.66){const inner=num2+num3;answer=num1-inner;if(inner<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&answer<0)continue;display=`${num1} - (${num2} + ${num3}) = `;success=true}}else{const inner=num1+num2;answer=inner-num3;if(inner<=maxNum&&Math.abs(answer)<=maxNum){if(!allowNegative&&answer<0)continue;display=`(${num1} + ${num2}) - ${num3} = `;success=true}}}if(!success){num1=half;num2=Math.max(1,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `}break;}
+                case'fill':if(maxNum<=1){answer=1;display=`__ + 1 = 2`}else if(rnd()>0.5){num2=rand(1,maxNum-1);const blank=rand(1,Math.max(1,maxNum-num2));answer=blank;display=`__ + ${num2} = ${blank+num2}`}else{num1=rand(2,maxNum);const blank=rand(1,num1-1);answer=blank;display=`${num1} - __ = ${num1-blank}`}isFillBlank=true;break;
                 case'complex':{const smc=Math.max(2,Math.floor(Math.sqrt(maxNum/2)));num1=rand(2,smc);num2=rand(2,smc);const product=num1*num2;num3=rand(1,Math.max(1,maxNum-product));answer=product+num3;display=`${num1} × ${num2} + ${num3} = `;break;}
                 case'carry':const unit1=rand(5,9);const unit2=rand(10-unit1,9);const ten1=rand(1,Math.floor(maxNum/10)-1);const ten2=rand(0,Math.floor((maxNum-ten1*10)/10));num1=ten1*10+unit1;num2=ten2*10+unit2;if(num1+num2>maxNum){num1=Math.min(num1,Math.floor(maxNum/2));num2=rand(50,maxNum-num1)}answer=num1+num2;display=`${num1} + ${num2} = `;break;
                 case'borrow':const u1=rand(0,8);const u2=rand(u1+1,9);const t1=rand(1,Math.floor(maxNum/10));const t2=rand(0,t1);num1=t1*10+u1;num2=t2*10+u2;if(!allowNegative&&num2>num1)num1=num2+rand(1,10);answer=num1-num2;if(answer<0&&!allowNegative){num1=num2+rand(1,maxNum-num2);answer=num1-num2}display=`${num1} - ${num2} = `;break;
@@ -2764,9 +3011,9 @@
                     }
                     break;
                 }
-                case'step':const stepType=rand(0,4);let stepExpr='';let stepAnswer=0;if(stepType===0){num1=rand(10,Math.floor(maxNum/3));num2=rand(10,Math.floor(maxNum/3));num3=rand(5,Math.floor(maxNum/3));stepExpr=`${num1} + ${num2} - ${num3}`;stepAnswer=num1+num2-num3}else if(stepType===1){num1=rand(2,Math.floor(Math.sqrt(maxNum)));num2=rand(2,Math.floor(Math.sqrt(maxNum)));num3=rand(5,Math.floor(maxNum-num1*num2));stepExpr=`${num1} × ${num2} + ${num3}`;stepAnswer=num1*num2+num3}else if(stepType===2){num1=rand(2,Math.floor(Math.sqrt(maxNum))+5);num2=rand(2,Math.floor(Math.sqrt(maxNum)));num3=rand(5,num1*num2-10);stepExpr=`${num1} × ${num2} - ${num3}`;stepAnswer=num1*num2-num3}else if(stepType===3){num1=rand(10,Math.floor(maxNum/2));num2=rand(5,Math.floor(maxNum/4));num3=rand(5,Math.floor(maxNum/4));if(Math.random()>0.5){stepExpr=`${num1} + (${num2} + ${num3})`;stepAnswer=num1+num2+num3}else{stepExpr=`${num1} + (${num2} - ${num3})`;stepAnswer=num1+num2-num3}}else{num1=rand(2,Math.floor(Math.sqrt(maxNum)));num2=rand(2,9);num3=rand(2,9);stepExpr=`(${num1} + ${num2}) × ${num3}`;stepAnswer=(num1+num2)*num3}if(!allowNegative&&stepAnswer<0){num1=rand(10,Math.floor(maxNum/2));num2=rand(10,maxNum-num1);stepExpr=`${num1} + ${num2}`;stepAnswer=num1+num2}if(stepAnswer>maxNum){num1=rand(5,50);num2=rand(5,50);stepExpr=`${num1} + ${num2}`;stepAnswer=num1+num2}answer=stepAnswer;display=stepExpr+' = ';break;
-                case'fraction-add':{const a1=pf(12);const b1=Math.random()>0.5?pfSame(a1[1]):pf(12);const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const commonDen=den1*den2/Math.gcd(den1,den2);const sumNum=num1*(commonDen/den1)+num2*(commonDen/den2);const gcd=Math.gcd(sumNum,commonDen);answer=`${sumNum/gcd}/${commonDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">+</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} + ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'+'};break;}
-                case'fraction-sub':{let a1,b1,k=0;do{a1=pf(12);b1=Math.random()>0.5?pfSame(a1[1]):pf(12);k++}while(a1[0]*b1[1]<=b1[0]*a1[1]&&k<80);if(a1[0]*b1[1]<=b1[0]*a1[1]){a1=[3,4];b1=[1,4]}const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const commonDen=den1*den2/Math.gcd(den1,den2);const diffNum=num1*(commonDen/den1)-num2*(commonDen/den2);const gcd=Math.gcd(diffNum,commonDen);answer=`${diffNum/gcd}/${commonDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">-</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} - ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'-'};break;}
+                case'step':const stepType=rand(0,4);let stepExpr='';let stepAnswer=0;if(stepType===0){num1=rand(10,Math.floor(maxNum/3));num2=rand(10,Math.floor(maxNum/3));num3=rand(5,Math.floor(maxNum/3));stepExpr=`${num1} + ${num2} - ${num3}`;stepAnswer=num1+num2-num3}else if(stepType===1){num1=rand(2,Math.floor(Math.sqrt(maxNum)));num2=rand(2,Math.floor(Math.sqrt(maxNum)));num3=rand(5,Math.floor(maxNum-num1*num2));stepExpr=`${num1} × ${num2} + ${num3}`;stepAnswer=num1*num2+num3}else if(stepType===2){num1=rand(2,Math.floor(Math.sqrt(maxNum))+5);num2=rand(2,Math.floor(Math.sqrt(maxNum)));num3=rand(5,num1*num2-10);stepExpr=`${num1} × ${num2} - ${num3}`;stepAnswer=num1*num2-num3}else if(stepType===3){num1=rand(10,Math.floor(maxNum/2));num2=rand(5,Math.floor(maxNum/4));num3=rand(5,Math.floor(maxNum/4));if(rnd()>0.5){stepExpr=`${num1} + (${num2} + ${num3})`;stepAnswer=num1+num2+num3}else{stepExpr=`${num1} + (${num2} - ${num3})`;stepAnswer=num1+num2-num3}}else{num1=rand(2,Math.floor(Math.sqrt(maxNum)));num2=rand(2,9);num3=rand(2,9);stepExpr=`(${num1} + ${num2}) × ${num3}`;stepAnswer=(num1+num2)*num3}if(!allowNegative&&stepAnswer<0){num1=rand(10,Math.floor(maxNum/2));num2=rand(10,maxNum-num1);stepExpr=`${num1} + ${num2}`;stepAnswer=num1+num2}if(stepAnswer>maxNum){num1=rand(5,50);num2=rand(5,50);stepExpr=`${num1} + ${num2}`;stepAnswer=num1+num2}answer=stepAnswer;display=stepExpr+' = ';break;
+                case'fraction-add':{const a1=pf(12);const b1=rnd()>0.5?pfSame(a1[1]):pf(12);const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const commonDen=den1*den2/Math.gcd(den1,den2);const sumNum=num1*(commonDen/den1)+num2*(commonDen/den2);const gcd=Math.gcd(sumNum,commonDen);answer=`${sumNum/gcd}/${commonDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">+</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} + ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'+'};break;}
+                case'fraction-sub':{let a1,b1,k=0;do{a1=pf(12);b1=rnd()>0.5?pfSame(a1[1]):pf(12);k++}while(a1[0]*b1[1]<=b1[0]*a1[1]&&k<80);if(a1[0]*b1[1]<=b1[0]*a1[1]){a1=[3,4];b1=[1,4]}const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const commonDen=den1*den2/Math.gcd(den1,den2);const diffNum=num1*(commonDen/den1)-num2*(commonDen/den2);const gcd=Math.gcd(diffNum,commonDen);answer=`${diffNum/gcd}/${commonDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">-</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} - ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'-'};break;}
                 case'fraction-mul':{const a1=pf(10),b1=pf(10);const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const prodNum=num1*num2;const prodDen=den1*den2;const gcd=Math.gcd(prodNum,prodDen);answer=`${prodNum/gcd}/${prodDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">×</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} × ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'×'};break;}
                 case'fraction-div':{const a1=pf(10),b1=pf(10);const num1=a1[0];const den1=a1[1];const num2=b1[0];const den2=b1[1];const quoNum=num1*den2;const quoDen=den1*num2;const gcd=Math.gcd(quoNum,quoDen);answer=`${quoNum/gcd}/${quoDen/gcd}`;if(appState.fractionMode==='traditional'){display=`<div class=\"fraction-row\">${createFractionHTML(num1,den1)}<span class=\"fraction-op\">÷</span>${createFractionHTML(num2,den2)}<span class=\"fraction-eq\">=</span></div>`;}else{display=`${num1}/${den1} ÷ ${num2}/${den2} = `;}fractionData={num1,den1,num2,den2,op:'÷'};break;}
                 default:num1=rand(0,maxNum);num2=rand(0,maxNum-num1);answer=num1+num2;display=`${num1} + ${num2} = `
@@ -3102,5 +3349,47 @@ function buildSolution(q){
 
         window.addEventListener('beforeunload',function(e){if(appState.questions.length>0&&!appState.isSubmitted){e.preventDefault();e.returnValue='您还有未提交的答题，确定要离开吗？'}cleanupResources()});
     </script>
+<!-- V2.10.0 更多入口 -->
+<div id="resourcesModal" class="res-mask no-print" style="display:none" onclick="if(event.target===this)closeResources()">
+  <div class="res-panel">
+    <div class="res-head"><h2>📱 更多入口</h2><button class="res-x" onclick="closeResources()" aria-label="关闭">×</button></div>
+    <p class="res-sub">网页版与微信小程序都能练口算、打竞赛——扫描对应二维码，或复制链接分享给朋友。</p>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="rq"><img src="data:image/png;base64,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" alt="网页版二维码"></div>
+        <div class="rn">① 网页版出题机</div>
+        <div class="rd">在线版 · 功能最全</div>
+        <div class="ra"><a href="https://asktai.github.io/KSCTJ/" target="_blank">打开网页</a><button onclick="resCopy('https://asktai.github.io/KSCTJ/')">复制链接</button></div>
+      </div>
+      <div class="res-card">
+        <div class="rq"><img src="data:image/jpeg;base64,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EREBV/UtTPBaal7OZj4MjpxYBKsC8JoKWaN0UrQ9rm4c13IoOD2mhNZXQU/R8o4seA3K7y50EURPJrI8+WAo632HTVE5z6eEMc4YLjku9N173KnqJ6KoijOHPp3Nb7/ug4fWXS6VNW6pL3cRly0jp4Aei7tSmY08Jk+IwNLvXAyuPWrTGopq6NktO+NjJgZHSDDcDfHuu1bIMoiIONa0l47s8ZzwU7W48OuPzVy0QJ/9KJccg1buH8v1VD1U9jrxVEHOHNHyAC6Ho1j22iIn8Uz3D54QWxERBTdU6buFxEMkBbxxgtLX7Ag7/ML30vp+rt0EvbFvaSPBIZuAByCtaICIiAiIgjbnQR1lFPTn8cRA9eYPsVwhrq2mnB3a+ObPmC1folQdRprSU9R94kp2ufnJO/CfMhBKU8rpIY5CMF0QcR67rYWAAFlAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREHNr/oy+VNe+opuAtlILg44IPIn0KutptwoaKCnzksZuRyydyVKIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiD//Z" alt="微信小程序码"></div>
+        <div class="rn">② 微信小程序</div>
+        <div class="rd">微信扫一扫 · 免安装</div>
+        <div class="ra"><button onclick="resTip()">如何打开</button></div>
+      </div>
+      <div class="res-card">
+        <div class="rq"><img src="data:image/png;base64,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iAoAGVEBICMqAGSy7a8TN25Sbdvjqs5n2+7Qtg2obedzYvKcJ9/nG69r8liTO2wnfKkAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQGZ0++vEtn2nG23bpDoxud207VjbduGqY237+9r2d3HjXtkJXyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkFm3/fVW2zbNbtykmryubbtM27a2Ts5n2zs/6cbnVZ2PLxUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyNj+WqTapKo2l6q9oMmNo237YJP3cNteWXWsbdf11n25ii8VADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMis2/7atmNTqa5rctvqxLb9oup8Tmx7V7dtW00ea9ve3Y33sOJLBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyo9tfk7tMN9q2F3TirbtMN26IvfXv68br+uRn6ksFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADJfz/P89jkA8BK+VADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADL/B7vdpaXpu8N9AAAAAElFTkSuQmCC" alt="操作说明二维码"></div>
+        <div class="rn">③ 操作使用说明</div>
+        <div class="rd">出题 / 竞赛 / 分享码</div>
+        <div class="ra"><a href="https://workbuddy.link/p/XQHpFPAtVrJau5p7RgH3Gj" target="_blank">打开说明</a><button onclick="resCopy('https://workbuddy.link/p/XQHpFPAtVrJau5p7RgH3Gj')">复制链接</button></div>
+      </div>
+      <div class="res-card">
+        <div class="rq"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAhwAAAIcCAIAAAAynOArAAAMe0lEQVR4nO3cwW3kzBVGUctQFo7FkXntyByL46AzEMr/XDy9Yp+zHrDZbGouavN9Pc/zNwAo/P23bwCA9xAVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkvqsL/eNf/6wudZ3//vs/yXWqZ3hyPyefVX2vE9vu55N98m/h/7E/56QCQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKAJls++vEjXtB1RbQ5J7SJ3/WpLduo237XpUbn09l8jk7qQCQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJAZnT768SNW0DVZ1Xffduu11s3u7a9q2/dYbO19bNtz8dJBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAy67a/+Nm2DbEb96a27TKd3M+2HbbJd2PbJh4/c1IBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIztr0Umd5BO3Li1tc22/atJ1daWza67OKkAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQGbd9tdbd36qDagT1ZZUdT/bdqsmv9e293nyfiZ3zz75OW/jpAJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAmdHtr20bUPy5bftO1Tu27XtVtn2vbdc54f+xnzmpAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkDm63me376Hj1DtBU3uX237rMqN91zZtrE26cbf60ZOKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQee3217Ztomp36K27XpO/1433c+LGXa9te1w37sJVv3vFSQWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMt/VhW7cHTpR3fO2fZ4bf69tO1GVG/emTlTvj928P/83k8/ZSQWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMl/P84x92LZdr222bRyd+OS9sht/r21ufIbbtrZO2P4C4EqiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMh8Vxea3GXatr2zbZOqsu33Ysa232tyq23bZ03ug1WcVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgk21/Tbpx1+vEJ9/zpLfe841bUtu24yafz1s/y0kFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADJfz/OMfdiN+zwntn2vyT2lG69z4sZ7PnHj/ZzY9h6euPH9OeGkAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgCZ79++gb/ixg2o6rPeatt337Z/9db7mdzaOrFtx+/G/8ecVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEg8/U8z2/fw/9t2z7PjbtV1RbQ5G+xbYdt2x7XiW1bW9vescq2e7b9BcCVRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQ+Z78sG17Sie27U1NmryfbVtkN9q2n1bZ9ru/9RlWnFQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBIPP1PE9yoRs3sib3cCbveXIH6a2/6eQW2bZ7rj6rcuM9n5h8fybfDScVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMh8T37Ytr2gT76fE5PbaNXzqTaOJr/7ierduHFjbdK2Pa4bOakAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQCbb/rpxM2dy32lyu2lyl2nbRtbke3jixv20t97zjXtcN96zkwoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZLLtrxu3rU68dXdo217QpG3baDde58S2v9MT296NyuRnOakAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQObreZ7kQpPbO5+8lbRt42ibbe9G5cb7qbz1b/nEje+zkwoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZL6rC1X7M9X2zrbrTO4OTdq2AXXj/tWN32ty2+pG2zbEJjmpAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkAm2/7atnXz1s2ubc+ncuP32rZ3V9n2zk9ukZ3Y9nxOTD4fJxUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyHw9zzP2Ydt2mU68dUPsxORe0IlqA+rG5zz53Sf/dm78Oz2x7R07UX13JxUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyHxXF7LLtOezbnzOlRu/17bf9MZneGLb38W2+6k4qQCQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJAJtv+OjG5kXXixl2dbftgk79F9Vkn3vpunPjk333b38WN+2BOKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQ+XqeJ7nQtr2pbftFJ7ZtW924O7Tt3Tjxye/8Np/8f1T1WU4qAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJBZt/01+VmTm1033vOJG5/hiW3PedK2bbTKW3/Tbb+XkwoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZEa3v068dbvpxvu58btv21ib5Pn8bNv7fGLbztgJJxUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyGTbXzfatklVsQ92l23v4Vuvc8Lf8p9zUgEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAzPdv38B2N+4XTe78VKrn89YNsep+Jq8z+R7euA+27R2rOKkAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQObreZ7kQtWuzolqM2fynk/cuAVkT+lnk7tw2/avKtv+Tifd+HfhpAJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAmWz7i5/duF+0bd/pxl2vE5Nbdtv2wbZto1W2fa/J5+OkAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgCZ7+pCN25bVbZtUp24cXdocr9o8n3etrVV2bZFdmLbhtiN/7c4qQCQERUAMqICQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJAJtv+OnHjjs22TbNqK2ly42jyOtX32rZFNmlyj+vGvy9+5qQCQEZUAMiICgAZUQEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKAJnR7a8Tk1tAN+78bNubqu6n+t2r777tOVe2bZpN/r1v2xmrbHtXnVQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBILNu++utJjeXtu2nbdtc2vact+1oTb6rN+6nTb4/1TOc3AdzUgEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjO2vy0xu+EzatiE2ue+0bbPrre/Ytr2ybZtvFScVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMis2/66cVOosm3/6sS2+7nR5Du/bW9q8n5u/KwbOakAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQObreZ7kQp+8AbVtU+iTt4m8hz+b3Oy6cY/rre/P5N+7kwoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMiICgAZUQEgIyoAZLLtLwBwUgEgIyoAZEQFgIyoAJARFQAyogJARlQAyIgKABlRASAjKgBkRAWAjKgAkBEVADKiAkBGVADIiAoAGVEBICMqAGREBYCMqACQERUAMqICQEZUAMj8D3+OzFRXMXcwAAAAAElFTkSuQmCC" alt="推广文案二维码"></div>
+        <div class="rn">④ 推广宣传文案</div>
+        <div class="rd">卖点 / 话术 / 数据</div>
+        <div class="ra"><a href="https://workbuddy.link/p/KCZ5AGt0G5crhrNJoB51eH" target="_blank">打开文案</a><button onclick="resCopy('https://workbuddy.link/p/KCZ5AGt0G5crhrNJoB51eH')">复制链接</button></div>
+      </div>
+    </div>
+    <div class="res-note">💡 <b>关于微信小程序：</b>小程序没有通用网页链接，需在微信内「扫一扫」上方小程序码，或长按识别打开。若你有小程序的 URL Link（wxaurl.cn 开头的链接），可替换到此处做成可点击链接。<br>💡 <b>关于跨端竞赛：</b>6 位竞赛码自包含「竞赛模式 + 限时 + 出题设置」，题目由 <code>race|码</code> 作种子确定性生成。只要小程序端与网页版用同一套码表和出题引擎，同码即可同题开赛；若不确定，请用「完整分享码（ZXM1，含题目原文）」跨端，保证 100% 一致。</div>
+  </div>
+</div>
+<script>
+function showResources(){var m=document.getElementById('resourcesModal');if(m)m.style.display='flex'}
+function closeResources(){var m=document.getElementById('resourcesModal');if(m)m.style.display='none'}
+function resCopy(u){if(typeof SafeAsync!=='undefined')SafeAsync.clipboard(u,'链接已复制');else try{navigator.clipboard.writeText(u)}catch(e){}}
+function resTip(){if(typeof showModal==='function')showModal('📱 打开微信小程序','用微信「扫一扫」扫描面板里的小程序码，或把码保存成图片后长按识别即可打开小程序。小程序无法像网页一样用普通链接从浏览器直接打开。')}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeResources()});
+</script>
+
 </body>
 </html>
